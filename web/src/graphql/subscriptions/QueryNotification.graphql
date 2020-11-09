@@ -1,0 +1,6 @@
+subscription QueryNotification {
+  subscription {
+    message
+    time
+  }
+}
