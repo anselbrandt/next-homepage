@@ -21,6 +21,7 @@ import { RedisPubSub } from "graphql-redis-subscriptions";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
+import { UserResolver } from "./resolvers/user";
 import { User } from "./entities/User";
 
 const PORT = process.env.PORT || 4000;
@@ -95,7 +96,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
+      resolvers: [HelloResolver, UserResolver],
       pubSub: pubsub,
       validate: false,
     }),
