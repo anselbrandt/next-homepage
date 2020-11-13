@@ -1,24 +1,3 @@
-/*
-mutation {
-  register(options: { username: "ansel", password: "ansel", email:"ansel@ansel.com" }) {
-    user {
-      id
-      createdAt
-    }
-  }
-}
-
-mutation {
-  login(usernameOrEmail:"ansel", password:"ansel") {
-    user {
-      username
-      id
-      email
-    }
-  }
-}
-*/
-
 import {
   Resolver,
   Mutation,
@@ -27,34 +6,13 @@ import {
   Ctx,
   ObjectType,
   Query,
-  FieldResolver,
-  Root,
-  UseMiddleware,
 } from "type-graphql";
-import { MyContext } from "./types";
-import { isAuth } from "../middleware/isAuth";
+import { MyContext } from "../types";
 import { User } from "../entities/User";
 import argon2 from "argon2";
-import {
-  COOKIE_NAME,
-  FORGET_PASSWORD_PREFIX,
-  SECRET,
-  CLIENT_ORIGIN,
-} from "../constants";
 import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
-import { sendEmail } from "../utils/sendEmail";
-import { v4 } from "uuid";
 import { getConnection } from "typeorm";
-import * as cookieJar from "cookie-signature";
-
-@ObjectType()
-class Cookie {
-  @Field()
-  name: string;
-  @Field()
-  value: string;
-}
 
 @ObjectType()
 class FieldError {
@@ -68,109 +26,18 @@ class FieldError {
 class UserResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
-
   @Field(() => User, { nullable: true })
   user?: User;
-
-  @Field(() => Cookie, { nullable: true })
-  cookie?: Cookie;
 }
 
 @Resolver(User)
 export class UserResolver {
-  @FieldResolver(() => String)
-  email(@Root() user: User, @Ctx() { req }: MyContext) {
-    if (req.session.userId === user.id) {
-      return user.email;
-    }
-    return "";
-  }
-
-  @Mutation(() => UserResponse)
-  async changePassword(
-    @Arg("token") token: string,
-    @Arg("newPassword") newPassword: string,
-    @Ctx() { redis, req }: MyContext
-  ): Promise<UserResponse> {
-    if (newPassword.length <= 2) {
-      return {
-        errors: [
-          {
-            field: "newPassword",
-            message: "length must be greater than 2",
-          },
-        ],
-      };
-    }
-    const key = FORGET_PASSWORD_PREFIX + token;
-    const userId = await redis.get(key);
-    if (!userId) {
-      return {
-        errors: [
-          {
-            field: "token",
-            message: "link expired",
-          },
-        ],
-      };
-    }
-    const userIdNum = parseInt(userId);
-    const user = await User.findOne(userIdNum);
-    if (!user) {
-      return {
-        errors: [
-          {
-            field: "token",
-            message: "user no longer exists",
-          },
-        ],
-      };
-    }
-    await User.update(
-      { id: userIdNum },
-      { password: await argon2.hash(newPassword) }
-    );
-    await redis.del(key);
-    req.session.userId = user.id;
-    return { user };
-  }
-
-  @Mutation(() => Boolean)
-  async forgotPassword(
-    @Arg("email") email: string,
-    @Ctx() { redis }: MyContext
-  ) {
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return true;
-    }
-    const token = v4();
-    await redis.set(
-      FORGET_PASSWORD_PREFIX + token,
-      user.id,
-      "ex",
-      1000 * 60 * 60 * 24
-    );
-    await sendEmail(
-      email,
-      `<a href="${CLIENT_ORIGIN}/change-password/${token}">reset password</a>`
-    );
-    return true;
-  }
-
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {
       return null;
     }
-    return User.findOne(req.session.userId);
-  }
 
-  @Query(() => User, { nullable: true })
-  favorites(@Ctx() { req }: MyContext) {
-    if (!req.session.userId) {
-      return null;
-    }
     return User.findOne(req.session.userId);
   }
 
@@ -192,14 +59,14 @@ export class UserResolver {
         .into(User)
         .values({
           username: options.username,
-          password: hashedPassword,
           email: options.email,
+          password: hashedPassword,
         })
         .returning("*")
         .execute();
       user = result.raw[0];
-    } catch (error) {
-      if (error.detail.includes("already exists")) {
+    } catch (err) {
+      if (err.code === "23505") {
         return {
           errors: [
             {
@@ -246,33 +113,9 @@ export class UserResolver {
         ],
       };
     }
-
     req.session.userId = user.id;
-    const signedCookie = cookieJar.sign(req.sessionID!, SECRET);
-    const cookie = {
-      name: COOKIE_NAME,
-      value: encodeURIComponent(`s:${signedCookie}`),
-    };
-
     return {
       user,
-      cookie,
     };
-  }
-
-  @Mutation(() => Boolean)
-  logout(@Ctx() { req, res }: MyContext) {
-    return new Promise((resolve) =>
-      req.session.destroy((err) => {
-        res.clearCookie(COOKIE_NAME);
-        if (err) {
-          console.log(err);
-          resolve(false);
-          return;
-        }
-
-        resolve(true);
-      })
-    );
   }
 }
