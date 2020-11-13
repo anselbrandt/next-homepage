@@ -26,7 +26,7 @@ export class FavoriteResolver {
   ): Promise<Favorite> {
     return Favorite.create({
       postId: postId,
-      creatorId: req.session.userId,
+      userId: req.session.userId,
     }).save();
   }
 }

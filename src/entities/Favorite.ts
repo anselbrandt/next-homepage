@@ -21,7 +21,7 @@ export class Favorite extends BaseEntity {
 
   @Field()
   @Column()
-  creatorId: number;
+  userId: number;
 
   @Field(() => String)
   @CreateDateColumn()
