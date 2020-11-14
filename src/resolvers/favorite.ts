@@ -26,6 +26,11 @@ class FavoriteInput {
 
 @Resolver(Favorite)
 export class FavoriteResolver {
+  @Query(() => Post, { nullable: true })
+  Post(@Arg("postId", () => String) postId: string): Promise<Post | undefined> {
+    return Post.findOne(postId);
+  }
+
   @Query(() => Favorite, { nullable: true })
   Favorite(@Arg("id", () => Int) id: number): Promise<Favorite | undefined> {
     return Favorite.findOne(id);
