@@ -34,15 +34,34 @@ export class LikeResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async addLike(@Arg("input") input: LikeInput, @Ctx() { req }: MyContext) {
-    await Like.create({
+    const existing = await Like.findOne({
       postId: input.postId,
       userId: req.session.userId,
-    }).save();
-    await Favorite.create({
+    });
+    if (!existing) {
+      await Like.create({
+        postId: input.postId,
+        userId: req.session.userId,
+      }).save();
+      await Favorite.create({
+        postId: input.postId,
+        link: input.link,
+        preview: input.preview,
+      }).save();
+    }
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async removeLike(@Arg("input") input: LikeInput, @Ctx() { req }: MyContext) {
+    const existing = await Like.findOne({
       postId: input.postId,
-      link: input.link,
-      preview: input.preview,
-    }).save();
+      userId: req.session.userId,
+    });
+    if (existing) {
+      await Like.remove(existing);
+    }
     return true;
   }
 }
