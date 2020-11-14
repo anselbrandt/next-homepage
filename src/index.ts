@@ -28,6 +28,7 @@ import { FavoriteResolver } from "./resolvers/favorite";
 import { Like } from "./entities/Like";
 import { User } from "./entities/User";
 import { Favorite } from "./entities/Favorite";
+import { createFavoriteLoader } from "./utils/createFavoriteLoader";
 
 const main = async () => {
   const conn = await createConnection({
@@ -109,6 +110,7 @@ const main = async () => {
         res,
         redis,
         pubsub,
+        favoriteLoader: createFavoriteLoader(),
       };
     },
     subscriptions: {
