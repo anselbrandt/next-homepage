@@ -24,9 +24,10 @@ import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { UserResolver } from "./resolvers/user";
 import { LikeResolver } from "./resolvers/like";
+import { FavoriteResolver } from "./resolvers/favorite";
 import { Like } from "./entities/Like";
 import { User } from "./entities/User";
-import { Post } from "./entities/Post";
+import { Favorite } from "./entities/Favorite";
 
 const main = async () => {
   const conn = await createConnection({
@@ -37,7 +38,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [Like, User, Post],
+    entities: [Like, User, Favorite],
   });
 
   await conn.runMigrations();
@@ -98,7 +99,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, LikeResolver],
+      resolvers: [HelloResolver, UserResolver, LikeResolver, FavoriteResolver],
       pubSub: pubsub,
       validate: false,
     }),

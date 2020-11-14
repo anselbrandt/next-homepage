@@ -10,7 +10,7 @@ import {
   Field,
 } from "type-graphql";
 import { Like } from "../entities/Like";
-import { Post } from "../entities/Post";
+import { Favorite } from "../entities/Favorite";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
 
@@ -26,11 +26,6 @@ class LikeInput {
 
 @Resolver(Like)
 export class LikeResolver {
-  @Query(() => Post, { nullable: true })
-  Post(@Arg("postId", () => String) postId: string): Promise<Post | undefined> {
-    return Post.findOne(postId);
-  }
-
   @Query(() => Like, { nullable: true })
   Like(@Arg("id", () => Int) id: number): Promise<Like | undefined> {
     return Like.findOne(id);
@@ -43,7 +38,7 @@ export class LikeResolver {
       postId: input.postId,
       userId: req.session.userId,
     }).save();
-    await Post.create({
+    await Favorite.create({
       postId: input.postId,
       link: input.link,
       preview: input.preview,

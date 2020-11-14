@@ -10,7 +10,7 @@ import {
 
 @ObjectType()
 @Entity()
-export class Post extends BaseEntity {
+export class Favorite extends BaseEntity {
   @PrimaryColumn()
   postId: string;
 
