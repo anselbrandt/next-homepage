@@ -9,13 +9,13 @@ import {
   InputType,
   Field,
 } from "type-graphql";
-import { Favorite } from "../entities/Favorite";
+import { Like } from "../entities/Like";
 import { Post } from "../entities/Post";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
 
 @InputType()
-class FavoriteInput {
+class LikeInput {
   @Field()
   postId: string;
   @Field()
@@ -24,25 +24,22 @@ class FavoriteInput {
   preview: string;
 }
 
-@Resolver(Favorite)
-export class FavoriteResolver {
+@Resolver(Like)
+export class LikeResolver {
   @Query(() => Post, { nullable: true })
   Post(@Arg("postId", () => String) postId: string): Promise<Post | undefined> {
     return Post.findOne(postId);
   }
 
-  @Query(() => Favorite, { nullable: true })
-  Favorite(@Arg("id", () => Int) id: number): Promise<Favorite | undefined> {
-    return Favorite.findOne(id);
+  @Query(() => Like, { nullable: true })
+  Like(@Arg("id", () => Int) id: number): Promise<Like | undefined> {
+    return Like.findOne(id);
   }
 
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
-  async addFavorite(
-    @Arg("input") input: FavoriteInput,
-    @Ctx() { req }: MyContext
-  ) {
-    await Favorite.create({
+  async addLike(@Arg("input") input: LikeInput, @Ctx() { req }: MyContext) {
+    await Like.create({
       postId: input.postId,
       userId: req.session.userId,
     }).save();

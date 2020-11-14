@@ -10,7 +10,7 @@ import {
 
 @ObjectType()
 @Entity()
-export class Favorite extends BaseEntity {
+export class Like extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
