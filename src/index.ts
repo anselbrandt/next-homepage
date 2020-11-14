@@ -8,6 +8,7 @@ import {
   DBNAME,
   REDIS_URL,
   DATABASE_URL,
+  PORT,
 } from "./constants";
 import path from "path";
 import { createConnection } from "typeorm";
@@ -25,8 +26,7 @@ import { UserResolver } from "./resolvers/user";
 import { FavoriteResolver } from "./resolvers/favorite";
 import { Favorite } from "./entities/Favorite";
 import { User } from "./entities/User";
-
-const PORT = process.env.PORT || 4000;
+import { Post } from "./entities/Post";
 
 const main = async () => {
   const conn = await createConnection({
@@ -37,7 +37,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [Favorite, User],
+    entities: [Favorite, User, Post],
   });
 
   await conn.runMigrations();

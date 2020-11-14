@@ -6,10 +6,23 @@ import {
   Query,
   Resolver,
   UseMiddleware,
+  InputType,
+  Field,
 } from "type-graphql";
 import { Favorite } from "../entities/Favorite";
+import { Post } from "../entities/Post";
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "../types";
+
+@InputType()
+class FavoriteInput {
+  @Field()
+  postId: string;
+  @Field()
+  link: string;
+  @Field()
+  preview: string;
+}
 
 @Resolver(Favorite)
 export class FavoriteResolver {
@@ -18,15 +31,21 @@ export class FavoriteResolver {
     return Favorite.findOne(id);
   }
 
-  @Mutation(() => Favorite)
+  @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async addFavorite(
-    @Arg("postId") postId: string,
+    @Arg("input") input: FavoriteInput,
     @Ctx() { req }: MyContext
-  ): Promise<Favorite> {
-    return Favorite.create({
-      postId: postId,
+  ) {
+    await Favorite.create({
+      postId: input.postId,
       userId: req.session.userId,
     }).save();
+    await Post.create({
+      postId: input.postId,
+      link: input.link,
+      preview: input.preview,
+    }).save();
+    return true;
   }
 }
