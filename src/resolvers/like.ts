@@ -60,33 +60,44 @@ export class LikeResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async addLike(@Arg("input") input: LikeInput, @Ctx() { req }: MyContext) {
-    const existing = await Like.findOne({
+    const existingLike = await Like.findOne({
       postId: input.postId,
       userId: req.session.userId,
     });
-    if (!existing) {
+    if (!existingLike) {
       await Like.create({
         postId: input.postId,
         userId: req.session.userId,
       }).save();
+    }
+    let existingFavorite = await Favorite.findOne(input.postId);
+    if (!existingFavorite) {
       await Favorite.create({
         postId: input.postId,
         link: input.link,
         preview: input.preview,
       }).save();
+    } else {
+      existingFavorite.points++;
+      await Favorite.save(existingFavorite);
     }
     return true;
   }
 
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
-  async removeLike(@Arg("input") input: LikeInput, @Ctx() { req }: MyContext) {
-    const existing = await Like.findOne({
-      postId: input.postId,
+  async removeLike(@Arg("postId") postId: string, @Ctx() { req }: MyContext) {
+    const existingLike = await Like.findOne({
+      postId: postId,
       userId: req.session.userId,
     });
-    if (existing) {
-      await Like.remove(existing);
+    if (existingLike) {
+      await Like.remove(existingLike);
+    }
+    let existingFavorite = await Favorite.findOne(postId);
+    if (existingFavorite) {
+      existingFavorite.points--;
+      await Favorite.save(existingFavorite);
     }
     return true;
   }

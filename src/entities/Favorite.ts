@@ -1,4 +1,4 @@
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, Int } from "type-graphql";
 import {
   Entity,
   Column,
@@ -21,6 +21,10 @@ export class Favorite extends BaseEntity {
   @Field()
   @Column()
   preview!: string;
+
+  @Field(() => Int)
+  @Column({ type: "int", default: 1 })
+  points!: number;
 
   @Field(() => String)
   @CreateDateColumn()
