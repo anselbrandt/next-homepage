@@ -8,6 +8,8 @@ import {
   UseMiddleware,
   InputType,
   Field,
+  FieldResolver,
+  Root,
 } from "type-graphql";
 import { Like } from "../entities/Like";
 import { Favorite } from "../entities/Favorite";
@@ -26,6 +28,11 @@ class LikeInput {
 
 @Resolver(Like)
 export class LikeResolver {
+  @FieldResolver(() => Favorite)
+  details(@Root() like: Like) {
+    return Favorite.findOne(like.postId);
+  }
+
   @Query(() => Like, { nullable: true })
   Like(@Arg("id", () => Int) id: number): Promise<Like | undefined> {
     return Like.findOne(id);
