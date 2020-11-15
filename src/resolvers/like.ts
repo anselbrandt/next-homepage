@@ -1,3 +1,4 @@
+import { LessThan } from "typeorm";
 import {
   Arg,
   Ctx,
@@ -33,6 +34,14 @@ class Likes {
   likes: Like[];
 }
 
+@ObjectType()
+class PaginatedLikes {
+  @Field(() => [Like])
+  likes: Like[];
+  @Field()
+  hasMore: boolean;
+}
+
 @Resolver(Like)
 export class LikeResolver {
   // @FieldResolver(() => Favorite)
@@ -55,6 +64,29 @@ export class LikeResolver {
   async allLikes(@Ctx() { req }: MyContext): Promise<Likes> {
     const likes = await Like.find({ where: { userId: req.session.userId } });
     return { likes: likes };
+  }
+
+  @Query(() => PaginatedLikes)
+  @UseMiddleware(isAuth)
+  async likes(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+    @Ctx() { req }: MyContext
+  ): Promise<PaginatedLikes> {
+    const realLimit = Math.min(25, limit);
+    const reaLimitPlusOne = realLimit + 1;
+    const likes = await Like.find({
+      order: { createdAt: "DESC" },
+      where: {
+        userId: req.session.userId,
+        createdAt: LessThan(cursor ? new Date(parseInt(cursor)) : new Date()),
+      },
+      take: reaLimitPlusOne,
+    });
+    return {
+      likes: likes.slice(0, realLimit),
+      hasMore: likes.length === reaLimitPlusOne,
+    };
   }
 
   @Mutation(() => Boolean)
