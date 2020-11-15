@@ -10,6 +10,7 @@ import {
   Field,
   FieldResolver,
   Root,
+  ObjectType,
 } from "type-graphql";
 import { Like } from "../entities/Like";
 import { Favorite } from "../entities/Favorite";
@@ -26,16 +27,34 @@ class LikeInput {
   preview: string;
 }
 
+@ObjectType()
+class Likes {
+  @Field(() => [Like])
+  likes: Like[];
+}
+
 @Resolver(Like)
 export class LikeResolver {
+  // @FieldResolver(() => Favorite)
+  // details(@Root() like: Like) {
+  //   return Favorite.findOne(like.postId);
+  // }
+
   @FieldResolver(() => Favorite)
-  details(@Root() like: Like) {
-    return Favorite.findOne(like.postId);
+  details(@Root() like: Like, @Ctx() { favoriteLoader }: MyContext) {
+    return favoriteLoader.load(like.postId);
   }
 
   @Query(() => Like, { nullable: true })
-  Like(@Arg("id", () => Int) id: number): Promise<Like | undefined> {
+  getLike(@Arg("id", () => Int) id: number): Promise<Like | undefined> {
     return Like.findOne(id);
+  }
+
+  @Query(() => Likes)
+  @UseMiddleware(isAuth)
+  async allLikes(@Ctx() { req }: MyContext): Promise<Likes> {
+    const likes = await Like.find({ where: { userId: req.session.userId } });
+    return { likes: likes };
   }
 
   @Mutation(() => Boolean)
