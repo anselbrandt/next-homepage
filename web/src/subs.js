@@ -1,3 +1,5 @@
+// https://www.reddit.com/r/sfwpornnetwork/wiki/network
+
 export const nature = [
   "EarthPorn",
   "BotanicalPorn",
