@@ -30,10 +30,12 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
       </Navbar>
       <Grid templateColumns="repeat(3, 1fr)" gap={1} width="1000px">
         {fetchedListings.map((value) => (
-          <Box key={value.key}>
-            <AspectRatio ratio={1}>
-              <Image src={value.preview} />
-            </AspectRatio>
+          <Box key={value.id}>
+            <ChakraLink href={`${sub}/${value.id}`}>
+              <AspectRatio ratio={1}>
+                <Image src={value.preview} />
+              </AspectRatio>
+            </ChakraLink>
           </Box>
         ))}
       </Grid>

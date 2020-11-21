@@ -1,9 +1,9 @@
-import { Box, Link as ChakraLink } from "@chakra-ui/core";
+import { Box, Link as ChakraLink, Image } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../../components/Container";
 import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
 import { Navbar } from "../../../components/Navbar";
-import useTokenFetch from "../../../hooks/useTokenFetch";
+import usePostFetch from "../../../hooks/usePostFetch";
 
 interface PostProps {
   defaultColor: string;
@@ -11,9 +11,12 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const router = useRouter();
-  const post = router.query.post;
-  const sub = router.query.sub;
-  const { token } = useTokenFetch();
+  const sub = router.query.sub as string;
+  const post = router.query.post as string;
+  const { fetchedPost, isLoading, next } = usePostFetch({
+    subreddit: sub,
+    postId: post,
+  });
   return (
     <Container minHeight="100vh">
       <DarkModeSwitch defaultColor={defaultColor} />
@@ -21,9 +24,10 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
         <ChakraLink href="/">Home</ChakraLink>
       </Navbar>
       <Box mt="30vh" maxW="48rem">
-        <Box>{post}</Box>
-        <Box>{sub}</Box>
-        <Box>{token}</Box>
+        <Box>{fetchedPost.title}</Box>
+        <Box>
+          <Image src={fetchedPost.preview} />
+        </Box>
       </Box>
     </Container>
   );

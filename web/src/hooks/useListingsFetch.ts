@@ -35,7 +35,7 @@ const useListingsFetch = ({
     ]);
 
     const controller = new AbortController();
-    if (subreddit) {
+    if (subreddit && token) {
       setIsLoading(true);
       fetch(
         `https://oauth.reddit.com/r/${subreddit}/${sortBy}/?${searchParams}`,
@@ -90,7 +90,7 @@ const useListingsFetch = ({
                 );
               }
               return {
-                key: post.data.id,
+                id: post.data.id,
                 image: postUrl,
                 title: title,
                 comments: post.data.num_comments,
