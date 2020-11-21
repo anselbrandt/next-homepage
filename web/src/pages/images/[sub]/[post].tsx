@@ -44,12 +44,14 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
           {fetchedComments.map((comment) => (
             <Box key={comment.id} mt="4">
               <Box>
-                <ChakraLink href={comment.profile}>
-                  <Text fontSize="xs">{comment.author}</Text>
-                </ChakraLink>
+                <Text fontSize="xs">
+                  <ChakraLink href={comment.profile}>
+                    {comment.author}
+                  </ChakraLink>
+                </Text>
               </Box>
               <Box ml="8" mt="2">
-                <Markdown plugins={[gfm]} source={comment.body} />
+                <Markdown plugins={[gfm]}>{comment.body}</Markdown>
               </Box>
             </Box>
           ))}
