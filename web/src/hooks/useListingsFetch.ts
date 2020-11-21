@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
+import useTokenFetch from "./useTokenFetch";
 
-interface useListingsProps {
+interface useListingsFetchProps {
   subreddit: string;
-  token: string;
-  sortBy: string;
-  topSort: string | null;
-  cursor: string | null;
+  sortBy?: string;
+  topSort?: string | null;
+  cursor?: string | null;
 }
 
-const useListings = ({
+const useListingsFetch = ({
   subreddit,
-  token,
-  sortBy,
-  topSort,
-  cursor,
-}: useListingsProps) => {
+  sortBy = "hot",
+  topSort = null,
+  cursor = null,
+}: useListingsFetchProps) => {
+  const { token } = useTokenFetch();
   const [fetchedListings, setFetchedListings] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [next, setNext] = useState(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [next, setNext] = useState<string | null>(null);
 
   useEffect(() => {
     setFetchedListings([]);
@@ -26,12 +26,12 @@ const useListings = ({
   useEffect(() => {
     setNext(null);
     const searchParams = new URLSearchParams([
-      [`t=${topSort}`],
-      ["g=GLOBAL"],
-      [`after=${cursor}`],
-      ["count=0"],
-      ["include_categories=false"],
-      ["limit=25"],
+      ["t", `${topSort}`],
+      ["g", "GLOBAL"],
+      ["after", `${cursor}`],
+      ["count", "0"],
+      ["include_categories", "false"],
+      ["limit", "25"],
     ]);
 
     const controller = new AbortController();
@@ -120,4 +120,4 @@ const useListings = ({
   return { fetchedListings, isLoading, next };
 };
 
-export default useListings;
+export default useListingsFetch;

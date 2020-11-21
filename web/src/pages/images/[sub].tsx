@@ -1,9 +1,15 @@
-import { Box, Link as ChakraLink } from "@chakra-ui/core";
+import {
+  AspectRatio,
+  Box,
+  Link as ChakraLink,
+  Image,
+  Grid,
+} from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../components/Container";
 import { DarkModeSwitch } from "../../components/DarkModeSwitch";
 import { Navbar } from "../../components/Navbar";
-import useTokenFetch from "../../hooks/useTokenFetch";
+import useListingsFetch from "../../hooks/useListingsFetch";
 
 interface SubProps {
   defaultColor: string;
@@ -11,19 +17,26 @@ interface SubProps {
 
 const Sub: React.FC<SubProps> = ({ defaultColor }) => {
   const router = useRouter();
-  const sub = router.query.sub;
-  const { token } = useTokenFetch();
+  const sub = router.query.sub as string;
+  const { fetchedListings, isLoading, next } = useListingsFetch({
+    subreddit: sub,
+  });
 
   return (
-    <Container minHeight="100vh">
+    <Container minHeight="100vh" width="100vw">
       <DarkModeSwitch defaultColor={defaultColor} />
       <Navbar defaultColor={defaultColor}>
         <ChakraLink href="/">Home</ChakraLink>
       </Navbar>
-      <Box mt="30vh" maxW="48rem">
-        <Box>{sub}</Box>
-        <Box>{token}</Box>
-      </Box>
+      <Grid templateColumns="repeat(3, 1fr)" gap={1} width="1000px">
+        {fetchedListings.map((value) => (
+          <Box key={value.key}>
+            <AspectRatio ratio={1}>
+              <Image src={value.preview} />
+            </AspectRatio>
+          </Box>
+        ))}
+      </Grid>
     </Container>
   );
 };
