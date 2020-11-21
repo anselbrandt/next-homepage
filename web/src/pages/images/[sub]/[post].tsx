@@ -1,14 +1,29 @@
-import { Box, Link as ChakraLink, Image, Heading, Text } from "@chakra-ui/core";
+import {
+  Box,
+  Link as ChakraLink,
+  Image,
+  Heading,
+  Text,
+  useColorMode,
+} from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../../components/Container";
 import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
 import { Navbar } from "../../../components/Navbar";
 import usePostFetch from "../../../hooks/usePostFetch";
-import Markdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import { createUseStyles } from "react-jss";
+import colors from "../../../utils/colors";
+import useIsomorphicLayoutEffect from "../../../hooks/useIsomorphicLayoutEffect";
+import { useState } from "react";
 
 interface PostProps {
   defaultColor: string;
+}
+
+interface StyleProps {
+  [prop: string]: string;
 }
 
 const Post: React.FC<PostProps> = ({ defaultColor }) => {
@@ -19,6 +34,49 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
     subreddit: sub,
     postId: post,
   });
+
+  const { colorMode } = useColorMode();
+  const linkColor = {
+    light: colors[defaultColor][500],
+    dark: colors[defaultColor][200],
+  };
+
+  const [styleProps, setStyleProps] = useState<StyleProps>();
+
+  const useStyles = createUseStyles({
+    markdown: (props) => ({
+      "& a": {
+        color: props.linkColor,
+      },
+      "& a:hover": {
+        textDecoration: "underline",
+      },
+    }),
+  });
+
+  interface MarkdownProps {
+    children: string;
+    linkColor: string;
+  }
+
+  const Markdown: React.FC<MarkdownProps> = ({ children, ...props }) => {
+    const classes = useStyles(props);
+    return (
+      <Box className={classes.markdown}>
+        <ReactMarkdown plugins={[gfm]}>{children}</ReactMarkdown>
+      </Box>
+    );
+  };
+
+  Markdown.defaultProps = {
+    linkColor: linkColor[colorMode],
+  };
+
+  useIsomorphicLayoutEffect(() => {
+    setStyleProps({
+      linkColor: linkColor[colorMode],
+    });
+  }, [colorMode]);
 
   return (
     <Container minHeight="100vh">
@@ -51,7 +109,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
                 </Text>
               </Box>
               <Box ml="8" mt="2">
-                <Markdown plugins={[gfm]}>{comment.body}</Markdown>
+                <Markdown styleProps={styleProps}>{comment.body}</Markdown>
               </Box>
             </Box>
           ))}
