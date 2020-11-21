@@ -33,7 +33,7 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
           <Box key={value.id}>
             <ChakraLink href={`${sub}/${value.id}`}>
               <AspectRatio ratio={1}>
-                <Image src={value.preview} />
+                <Image src={value.preview} objectFit="cover" />
               </AspectRatio>
             </ChakraLink>
           </Box>
