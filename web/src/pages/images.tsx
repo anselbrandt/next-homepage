@@ -1,4 +1,4 @@
-import { Box, Link as ChakraLink, Heading } from "@chakra-ui/core";
+import { Box, Link as ChakraLink, Heading, SimpleGrid } from "@chakra-ui/core";
 import { Container } from "../components/Container";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { Navbar } from "../components/Navbar";
@@ -15,19 +15,21 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
       <Navbar defaultColor={defaultColor}>
         <ChakraLink href="/">Home</ChakraLink>
       </Navbar>
-      <Box mt="30vh" maxW="48rem">
-        {allsubs.map((value, index) => (
-          <Box key={index}>
-            <Heading>{value.category}</Heading>
-            <Box>
-              {value.subs.map((value, index) => (
-                <Box key={index}>
-                  <ChakraLink href={`/images/${value}`}>{value}</ChakraLink>
-                </Box>
-              ))}
+      <Box width="100%" maxWidth="1000px">
+        <SimpleGrid mx="8" minChildWidth="180px">
+          {allsubs.map((value, index) => (
+            <Box key={index}>
+              <Heading>{value.category}</Heading>
+              <Box>
+                {value.subs.map((value, index) => (
+                  <Box key={index}>
+                    <ChakraLink href={`/images/${value}`}>{value}</ChakraLink>
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          </Box>
-        ))}
+          ))}
+        </SimpleGrid>
       </Box>
     </Container>
   );
