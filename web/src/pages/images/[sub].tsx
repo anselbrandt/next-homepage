@@ -28,7 +28,12 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
       <Navbar defaultColor={defaultColor}>
         <ChakraLink href="/">Home</ChakraLink>
       </Navbar>
-      <Grid templateColumns="repeat(3, 1fr)" gap={1} width="1000px">
+      <Grid
+        templateColumns="repeat(3, 1fr)"
+        gap={1}
+        width="100%"
+        maxWidth="1000px"
+      >
         {fetchedListings.map((value) => (
           <Box key={value.id}>
             <ChakraLink href={`${sub}/${value.id}`}>
