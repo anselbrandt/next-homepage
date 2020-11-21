@@ -1,9 +1,11 @@
-import { Box, Link as ChakraLink, Image } from "@chakra-ui/core";
+import { Box, Link as ChakraLink, Image, Heading, Text } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../../components/Container";
 import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
 import { Navbar } from "../../../components/Navbar";
 import usePostFetch from "../../../hooks/usePostFetch";
+import Markdown from "react-markdown";
+import gfm from "remark-gfm";
 
 interface PostProps {
   defaultColor: string;
@@ -13,10 +15,11 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const router = useRouter();
   const sub = router.query.sub as string;
   const post = router.query.post as string;
-  const { fetchedPost, isLoading, next } = usePostFetch({
+  const { fetchedPost, fetchedComments, isPostLoading } = usePostFetch({
     subreddit: sub,
     postId: post,
   });
+
   return (
     <Container minHeight="100vh">
       <DarkModeSwitch defaultColor={defaultColor} />
@@ -29,10 +32,27 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
             <Image src={fetchedPost.preview} objectFit="cover" />
           </ChakraLink>
         </Box>
-        <Box>
+        <Box mt="4" mx="2">
           <ChakraLink href={fetchedPost.permalink}>
-            {fetchedPost.title}
+            <Heading size="sm">{fetchedPost.title}</Heading>
           </ChakraLink>
+          <ChakraLink href={fetchedPost.profile} mt="2" ml="8">
+            {fetchedPost.author}
+          </ChakraLink>
+        </Box>
+        <Box mt="8" mx="2">
+          {fetchedComments.map((comment) => (
+            <Box key={comment.id} mt="4">
+              <Box>
+                <ChakraLink href={comment.profile}>
+                  <Text fontSize="xs">{comment.author}</Text>
+                </ChakraLink>
+              </Box>
+              <Box ml="8" mt="2">
+                <Markdown plugins={[gfm]} source={comment.body} />
+              </Box>
+            </Box>
+          ))}
         </Box>
       </Box>
     </Container>
