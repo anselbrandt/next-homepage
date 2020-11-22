@@ -25,7 +25,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
       <Navbar defaultColor={defaultColor}>
         <ChakraLink href="/">Home</ChakraLink>
       </Navbar>
-      <Box maxW="48rem">
+      <Box width="100%" maxW="600px">
         <Box>
           <ChakraLink href={fetchedPost.image}>
             <Image src={fetchedPost.preview} objectFit="cover" />
