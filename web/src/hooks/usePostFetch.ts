@@ -21,7 +21,7 @@ const usePostFetch = ({ subreddit, postId }: usePostFetchProps) => {
     setIsPostLoading(true);
 
     const searchParams = new URLSearchParams([
-      ["article", `${postId}`],
+      ["article", postId],
       ["context", "8"],
       ["showedits", "false"],
       ["showmore", "false"],
