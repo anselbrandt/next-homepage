@@ -14,7 +14,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const router = useRouter();
   const sub = router.query.sub as string;
   const post = router.query.post as string;
-  const { fetchedPost, fetchedComments, isPostLoading } = usePostFetch({
+  const { fetchedPost, fetchedComments } = usePostFetch({
     subreddit: sub,
     postId: post,
   });
@@ -31,15 +31,17 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
             <Image src={fetchedPost.preview} objectFit="cover" />
           </ChakraLink>
         </Box>
-        <Box mt="4" mx="2">
+        <Box mt="10" mx="2">
           <ChakraLink href={fetchedPost.permalink}>
             <Heading size="sm">{fetchedPost.title}</Heading>
           </ChakraLink>
-          <ChakraLink href={fetchedPost.profile} mt="2" ml="8">
-            {fetchedPost.author}
-          </ChakraLink>
+          <Text fontSize="sm" mt="2" ml="8">
+            <ChakraLink href={fetchedPost.profile}>
+              {fetchedPost.author}
+            </ChakraLink>
+          </Text>
         </Box>
-        <Box mt="8" mx="2">
+        <Box mt="10" mx="2" mb="10">
           {fetchedComments.map((comment) => (
             <Box key={comment.id} mt="4">
               <Box>
