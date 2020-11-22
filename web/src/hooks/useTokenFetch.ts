@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { REDDITKEY } from "../../constants";
 
 export default function useTokenFetch() {
   const [token, setToken] = useState<string>();
 
   useEffect(() => {
-    const clientID = process.env.NEXT_PUBLIC_REDDITKEY;
-    const credentials = Buffer.from(`${clientID}:`).toString("base64");
+    const credentials = Buffer.from(`${REDDITKEY}:`).toString("base64");
     const searchParams = new URLSearchParams([
       ["grant_type", "https://oauth.reddit.com/grants/installed_client"],
       ["device_id", "DO_NOT_TRACK_THIS_DEVICE"],
