@@ -39,6 +39,9 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
         <ChakraLink href="/about" mr="2rem">
           About
         </ChakraLink>
+        <ChakraLink href="/images" mr="2rem">
+          Images
+        </ChakraLink>
         <ChakraLink href="/images/CabinPorn/is5fzo">Test</ChakraLink>
       </Navbar>
       <Hero />
