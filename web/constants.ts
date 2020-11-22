@@ -8,3 +8,5 @@ export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export const REDDITKEY = process.env.NEXT_PUBLIC_REDDITKEY;
+
+export const GOOGLEKEY = process.env.NEXT_PUBLIC_GOOGLEKEY;
