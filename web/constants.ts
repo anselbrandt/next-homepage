@@ -10,3 +10,5 @@ export const API_URL =
 export const REDDITKEY = process.env.NEXT_PUBLIC_REDDITKEY;
 
 export const GOOGLEKEY = process.env.NEXT_PUBLIC_GOOGLEKEY;
+
+export const MAPBOX_ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
