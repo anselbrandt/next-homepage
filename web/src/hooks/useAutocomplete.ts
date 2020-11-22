@@ -7,7 +7,7 @@ interface useAutocompleteProps {
 
 const useAutocomplete = ({ searchTerm }: useAutocompleteProps) => {
   const { token } = useTokenFetch();
-  const [autocompleteList, setAutocompleteList] = useState([]);
+  const [autocompleteList, setAutocompleteList] = useState<any[]>([]);
 
   useEffect(() => {
     setAutocompleteList([]);
@@ -54,7 +54,7 @@ const useAutocomplete = ({ searchTerm }: useAutocompleteProps) => {
       return () => controller.abort();
     }
   }, [searchTerm]);
-  return { autocompleteList };
+  return { autocompleteList } as const;
 };
 
 export default useAutocomplete;
