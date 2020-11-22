@@ -8,12 +8,14 @@ import {
   InputGroup,
   InputLeftAddon,
   Flex,
+  FormControl,
 } from "@chakra-ui/core";
 import { Container } from "../components/Container";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { Navbar } from "../components/Navbar";
 import { allsubs } from "../subs";
 import useAutocomplete from "../hooks/useAutocomplete";
+import { useRouter } from "next/router";
 
 interface ImagesProps {
   defaultColor: string;
@@ -22,10 +24,19 @@ interface ImagesProps {
 const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
   const { autocompleteList } = useAutocomplete({ searchTerm: searchTerm });
+  const router = useRouter();
 
   const handleSearch = (event: any) => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      event.stopPropagation();
+      router.push(`/images/${searchTerm}`);
+    }
   };
 
   return (
@@ -37,19 +48,22 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
       <Box width="100%" maxWidth="1000px">
         <Flex justifyContent="center" mb="10">
           <Box>
-            <InputGroup>
-              <InputLeftAddon children="r/" />
-              <Input
-                borderRadius="0"
-                list="subreddits"
-                placeholder="search for subreddit"
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck="false"
-                onChange={handleSearch}
-              />
-            </InputGroup>
+            <FormControl onKeyDown={handleKeyDown}>
+              <InputGroup>
+                <InputLeftAddon children="r/" />
+                <Input
+                  type="text"
+                  borderRadius="0"
+                  list="subreddits"
+                  placeholder="search for subreddit"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck="false"
+                  onChange={handleSearch}
+                />
+              </InputGroup>
+            </FormControl>
           </Box>
         </Flex>
         <datalist id="subreddits">
