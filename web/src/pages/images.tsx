@@ -7,7 +7,6 @@ import {
   InputLeftAddon,
   Flex,
   FormControl,
-  Spinner,
 } from "@chakra-ui/core";
 import { Container } from "../components/Container";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
