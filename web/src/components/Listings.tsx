@@ -13,6 +13,7 @@ interface ListingsProps {
   isLoading: boolean;
   sub: string | undefined;
   setBottom: any;
+  linkPrefix?: string | null;
 }
 
 export const Listings: React.FC<ListingsProps> = ({
@@ -20,6 +21,7 @@ export const Listings: React.FC<ListingsProps> = ({
   setBottom,
   sub,
   isLoading,
+  linkPrefix,
 }) => {
   return (
     <Grid
@@ -32,7 +34,7 @@ export const Listings: React.FC<ListingsProps> = ({
         if (index === fetchedListings.length - 1) {
           return (
             <Box key={value.id} ref={setBottom}>
-              <ChakraLink href={`${sub}/${value.id}`}>
+              <ChakraLink href={`${linkPrefix}${sub}/${value.id}`}>
                 <AspectRatio ratio={1}>
                   <Image src={value.preview} objectFit="cover" />
                 </AspectRatio>
@@ -42,7 +44,7 @@ export const Listings: React.FC<ListingsProps> = ({
         } else {
           return (
             <Box key={value.id}>
-              <ChakraLink href={`${sub}/${value.id}`}>
+              <ChakraLink href={`${linkPrefix}${sub}/${value.id}`}>
                 <AspectRatio ratio={1}>
                   <Image src={value.preview} objectFit="cover" />
                 </AspectRatio>

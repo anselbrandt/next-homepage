@@ -124,6 +124,7 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
           isLoading={isLoading}
           sub={subreddit}
           setBottom={setBottom}
+          linkPrefix={"images/"}
         />
         {displayedListings.length === 0 && <Directory />}
       </Box>
