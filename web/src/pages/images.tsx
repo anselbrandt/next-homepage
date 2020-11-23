@@ -15,7 +15,7 @@ import { Navbar } from "../components/Navbar";
 import useAutocomplete from "../hooks/useAutocomplete";
 import useListingsFetch from "../hooks/useListingsFetch";
 import { useRouter } from "next/router";
-import Directory from "../components/Directory";
+import { Directory } from "../components/Directory";
 
 interface ImagesProps {
   defaultColor: string;

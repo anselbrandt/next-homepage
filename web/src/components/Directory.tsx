@@ -2,7 +2,7 @@ import React from "react";
 import { SimpleGrid, Box, Heading, Link as ChakraLink } from "@chakra-ui/core";
 import { allsubs } from "../subs";
 
-const Directory = () => {
+export const Directory = () => {
   return (
     <SimpleGrid mx="8" minChildWidth="180px">
       {allsubs.map((value, index) => (
@@ -20,5 +20,3 @@ const Directory = () => {
     </SimpleGrid>
   );
 };
-
-export default Directory;
