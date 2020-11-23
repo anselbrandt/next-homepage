@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Box,
   Link as ChakraLink,
@@ -16,6 +16,7 @@ import useAutocomplete from "../hooks/useAutocomplete";
 import useListingsFetch from "../hooks/useListingsFetch";
 import { useRouter } from "next/router";
 import { Directory } from "../components/Directory";
+import { Listings } from "../components/Listings";
 
 interface ImagesProps {
   defaultColor: string;
@@ -25,15 +26,22 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string | undefined>();
   const [subreddit, setSubreddit] = useState<string | undefined>();
+  const [cursor, setCursor] = useState<string | null>(null);
   const [displayedListings, setDisplayedListings] = useState<any[]>([]);
   const { autocompleteList } = useAutocomplete({ searchTerm: searchTerm });
   const { fetchedListings, isLoading, next } = useListingsFetch({
     subreddit: subreddit,
+    cursor: cursor,
   });
+
+  const bottomObserver = useRef<any>();
+  const [bottom, setBottom] = useState<any>(null);
 
   const handleSearch = (event: any) => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
+    setSubreddit(undefined);
+    setCursor(null);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -56,6 +64,28 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
   useEffect(() => {
     setDisplayedListings(fetchedListings);
   }, [fetchedListings]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setCursor(next);
+      }
+    });
+    bottomObserver.current = observer;
+  }, [next, isLoading, bottomObserver]);
+  useEffect(() => {
+    if (isLoading) return;
+    const observer = bottomObserver.current;
+    if (bottom) {
+      observer.observe(bottom);
+    }
+    return () => {
+      if (bottom) {
+        observer.unobserve(bottom);
+      }
+    };
+  }, [bottom, isLoading, bottomObserver]);
 
   return (
     <Container minHeight="100vh">
@@ -89,18 +119,13 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
             <option key={entry.key} value={entry.name} />
           ))}
         </datalist>
-        {isLoading ? (
-          <Flex
-            width="100%"
-            height="100%"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Spinner thickness="4px" speed="0.65s" size="xl" />
-          </Flex>
-        ) : (
-          displayedListings.length === 0 && <Directory />
-        )}
+        <Listings
+          fetchedListings={fetchedListings}
+          isLoading={isLoading}
+          sub={subreddit}
+          setBottom={setBottom}
+        />
+        {displayedListings.length === 0 && <Directory />}
       </Box>
     </Container>
   );

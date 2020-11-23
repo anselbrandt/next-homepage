@@ -11,7 +11,7 @@ import {
 interface ListingsProps {
   fetchedListings: any[];
   isLoading: boolean;
-  sub: string;
+  sub: string | undefined;
   setBottom: any;
 }
 
