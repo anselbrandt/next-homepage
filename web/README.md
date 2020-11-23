@@ -28,11 +28,13 @@ Enter the following `Environment Variables` before hitting the final `Deploy` bu
 
 (substituting `app_name` for your actual app name)
 
-| NAME                  | VALUE                                    |
-| --------------------- | ---------------------------------------- |
-| NEXT_PUBLIC_HTTP      | `https://app_name.herokuapp.com/graphql` |
-| NEXT_PUBLIC_WEBSOCKET | `wss://app_name.herokuapp.com/graphql`   |
-| NEXT_PUBLIC_API_URL   | `https://app_name.herokuapp.com`         |
+```
+NEXT_PUBLIC_HTTP=https://app_name.herokuapp.com/graphql
+
+NEXT_PUBLIC_WEBSOCKET=wss://app_name.herokuapp.com/graphql
+
+NEXT_PUBLIC_API_URL=https://app_name.herokuapp.com
+```
 
 ## How to use
 
