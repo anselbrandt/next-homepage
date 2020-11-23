@@ -1,30 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Link as ChakraLink,
-  Heading,
-  SimpleGrid,
   Input,
   InputGroup,
   InputLeftAddon,
   Flex,
   FormControl,
+  Spinner,
 } from "@chakra-ui/core";
 import { Container } from "../components/Container";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { Navbar } from "../components/Navbar";
-import { allsubs } from "../subs";
 import useAutocomplete from "../hooks/useAutocomplete";
+import useListingsFetch from "../hooks/useListingsFetch";
 import { useRouter } from "next/router";
+import Directory from "../components/Directory";
 
 interface ImagesProps {
   defaultColor: string;
 }
 
 const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
-  const [searchTerm, setSearchTerm] = useState<string | undefined>();
-  const { autocompleteList } = useAutocomplete({ searchTerm: searchTerm });
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState<string | undefined>();
+  const [subreddit, setSubreddit] = useState<string | undefined>();
+  const [displayedListings, setDisplayedListings] = useState<any[]>([]);
+  const { autocompleteList } = useAutocomplete({ searchTerm: searchTerm });
+  const { fetchedListings, isLoading, next } = useListingsFetch({
+    subreddit: subreddit,
+  });
 
   const handleSearch = (event: any) => {
     const value = event.currentTarget.value;
@@ -38,6 +43,19 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
       router.push(`/images/${searchTerm}`);
     }
   };
+
+  useEffect(() => {
+    const names = autocompleteList.map((entry) => entry.name.toLowerCase());
+    if (names.includes(searchTerm)) {
+      setSubreddit(searchTerm);
+    } else {
+      setDisplayedListings([]);
+    }
+  }, [autocompleteList, searchTerm]);
+
+  useEffect(() => {
+    setDisplayedListings(fetchedListings);
+  }, [fetchedListings]);
 
   return (
     <Container minHeight="100vh">
@@ -71,20 +89,18 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
             <option key={entry.key} value={entry.name} />
           ))}
         </datalist>
-        <SimpleGrid mx="8" minChildWidth="180px">
-          {allsubs.map((value, index) => (
-            <Box key={index}>
-              <Heading>{value.category}</Heading>
-              <Box>
-                {value.subs.map((value, index) => (
-                  <Box key={index}>
-                    <ChakraLink href={`/images/${value}`}>{value}</ChakraLink>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          ))}
-        </SimpleGrid>
+        {isLoading ? (
+          <Flex
+            width="100%"
+            height="100%"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Spinner thickness="4px" speed="0.65s" size="xl" />
+          </Flex>
+        ) : (
+          displayedListings.length === 0 && <Directory />
+        )}
       </Box>
     </Container>
   );

@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import useTokenFetch from "./useTokenFetch";
 
 interface useListingsFetchProps {
-  subreddit: string;
+  subreddit?: string | null;
   sortBy?: string;
   topSort?: string | null;
   cursor?: string | null;
 }
 
 const useListingsFetch = ({
-  subreddit,
+  subreddit = null,
   sortBy = "hot",
   topSort = null,
   cursor = null,
