@@ -3,9 +3,10 @@ import useTokenFetch from "./useTokenFetch";
 
 interface useAutocompleteProps {
   searchTerm?: string;
+  cancel?: boolean;
 }
 
-const useAutocomplete = ({ searchTerm }: useAutocompleteProps) => {
+const useAutocomplete = ({ searchTerm, cancel }: useAutocompleteProps) => {
   const { token } = useTokenFetch();
   const [autocompleteList, setAutocompleteList] = useState<any[]>([]);
 
@@ -22,7 +23,7 @@ const useAutocomplete = ({ searchTerm }: useAutocompleteProps) => {
       ["query", `${searchTerm}`],
     ]);
 
-    if (searchTerm) {
+    if (searchTerm && !cancel) {
       const controller = new AbortController();
       fetch(
         `https://oauth.reddit.com/api/subreddit_autocomplete_v2?${searchParams}`,
@@ -49,7 +50,7 @@ const useAutocomplete = ({ searchTerm }: useAutocompleteProps) => {
         })
         .catch((error) => {
           if (error.name === "AbortError") return;
-          else throw error;
+          else console.error(error);
         });
       return () => controller.abort();
     }

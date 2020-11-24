@@ -16,6 +16,7 @@ import useListingsFetch from "../hooks/useListingsFetch";
 import { useRouter } from "next/router";
 import { Directory } from "../components/Directory";
 import { Listings } from "../components/Listings";
+import Cookie from "js-cookie";
 
 interface ImagesProps {
   defaultColor: string;
@@ -23,11 +24,15 @@ interface ImagesProps {
 
 const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState<string | undefined>();
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [subreddit, setSubreddit] = useState<string | undefined>();
   const [cursor, setCursor] = useState<string | null>(null);
   const [displayedListings, setDisplayedListings] = useState<any[]>([]);
-  const { autocompleteList } = useAutocomplete({ searchTerm: searchTerm });
+  const [cancel, setCancel] = useState<boolean>(false);
+  const { autocompleteList } = useAutocomplete({
+    searchTerm: searchTerm,
+    cancel: cancel,
+  });
   const { fetchedListings, isLoading, next } = useListingsFetch({
     subreddit: subreddit,
     cursor: cursor,
@@ -41,6 +46,7 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
     setSearchTerm(value);
     setSubreddit(undefined);
     setCursor(null);
+    setCancel(false);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -52,11 +58,29 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
   };
 
   useEffect(() => {
+    const prevSearch = Cookie.get("prevSearch");
+    if (prevSearch) {
+      setSearchTerm(prevSearch);
+      setSubreddit(prevSearch);
+      setCancel(true);
+    }
+  }, []);
+
+  useEffect(() => {
     const names = autocompleteList.map((entry) => entry.name.toLowerCase());
     if (names.includes(searchTerm)) {
       setSubreddit(searchTerm);
+      Cookie.set("searchResult", searchTerm);
     } else {
       setDisplayedListings([]);
+    }
+  }, [autocompleteList, searchTerm]);
+
+  useEffect(() => {
+    const names = autocompleteList.map((entry) => entry.name.toLowerCase());
+    if (autocompleteList.length > 0 && !names.includes(searchTerm)) {
+      Cookie.remove("searchResult");
+      Cookie.remove("prevSearch");
     }
   }, [autocompleteList, searchTerm]);
 
@@ -108,6 +132,7 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
                   autoCapitalize="off"
                   spellCheck="false"
                   onChange={handleSearch}
+                  value={searchTerm}
                 />
               </InputGroup>
             </FormControl>

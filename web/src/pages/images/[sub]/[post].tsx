@@ -5,6 +5,8 @@ import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
 import { Navbar } from "../../../components/Navbar";
 import usePostFetch from "../../../hooks/usePostFetch";
 import { Markdown } from "../../../components/Markdown";
+import { useEffect } from "react";
+import Cookie from "js-cookie";
 
 interface PostProps {
   defaultColor: string;
@@ -18,6 +20,15 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
     subreddit: sub,
     postId: post,
   });
+
+  useEffect(() => {
+    const prevSearch = Cookie.get("searchResult");
+    if (prevSearch) {
+      Cookie.set("prevSearch", prevSearch);
+    } else {
+      Cookie.remove("prevSearch");
+    }
+  }, []);
 
   return (
     <Container minHeight="100vh">
