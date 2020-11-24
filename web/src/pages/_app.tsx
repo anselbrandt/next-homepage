@@ -1,22 +1,27 @@
-import { ChakraProvider } from "@chakra-ui/core";
+import { ThemeProvider, CSSReset, ColorModeProvider } from "@chakra-ui/core";
+import Cookies from "universal-cookie";
 import "./_app.css";
-
 import theme from "../theme";
-import { AppProps } from "next/app";
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps, initialColorMode }: any) {
   return (
-    <ChakraProvider resetCSS theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <ThemeProvider theme={theme}>
+      <ColorModeProvider options={{ initialColorMode: initialColorMode }}>
+        <CSSReset />
+        <Component {...pageProps} />
+      </ColorModeProvider>
+    </ThemeProvider>
   );
 }
 
-App.getInitialProps = async () => {
+App.getInitialProps = async ({ ctx }: any) => {
+  const cookies = new Cookies(ctx.req?.headers.cookie);
+  const colorMode = cookies.get("colorMode");
   return {
     pageProps: {
       defaultColor: "purple",
     },
+    initialColorMode: colorMode,
   };
 };
 

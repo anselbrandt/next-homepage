@@ -8,15 +8,19 @@ export const DarkModeSwitch: React.FC<DarkModeSwitchProps> = ({
   defaultColor,
 }) => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const isDark = colorMode === "dark";
+  const handleToggleDarkMode = () => {
+    toggleColorMode();
+    document.cookie = `colorMode=${colorMode === "light" ? "dark" : "light"}`;
+  };
+
   return (
     <Switch
       position="fixed"
       top="1rem"
       right="1rem"
       colorScheme={defaultColor}
-      isChecked={isDark}
-      onChange={toggleColorMode}
+      isChecked={colorMode === "dark" ? true : false}
+      onChange={handleToggleDarkMode}
     />
   );
 };
