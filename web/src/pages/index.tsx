@@ -33,7 +33,7 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
     <Container minHeight="100vh">
       <DarkModeSwitch defaultColor={defaultColor} />
       <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/404" mr="2rem">
+        <ChakraLink href="/error" mr="2rem">
           404
         </ChakraLink>
         <ChakraLink href="/about" mr="2rem">
