@@ -57,6 +57,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
         <Box mt="10" mx="2">
           <ChakraLink
             href={fetchedPost.permalink}
+            color={linkColor[colorMode]}
             _visited={{ color: linkColor[colorMode] }}
           >
             <Heading size="sm">{fetchedPost.title}</Heading>
