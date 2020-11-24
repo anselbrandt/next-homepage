@@ -1,4 +1,11 @@
-import { Box, Link as ChakraLink, Image, Heading, Text } from "@chakra-ui/core";
+import {
+  Box,
+  Link as ChakraLink,
+  Image,
+  Heading,
+  Text,
+  useColorMode,
+} from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../../components/Container";
 import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
@@ -13,6 +20,7 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ defaultColor }) => {
+  const { colorMode } = useColorMode();
   const router = useRouter();
   const sub = router.query.sub as string;
   const post = router.query.post as string;
@@ -43,7 +51,10 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
           </ChakraLink>
         </Box>
         <Box mt="10" mx="2">
-          <ChakraLink href={fetchedPost.permalink}>
+          <ChakraLink
+            href={fetchedPost.permalink}
+            color={colorMode === "dark" ? "white" : "black"}
+          >
             <Heading size="sm">{fetchedPost.title}</Heading>
           </ChakraLink>
           <Text fontSize="sm" mt="2" ml="8">
