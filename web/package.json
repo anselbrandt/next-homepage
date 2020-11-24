@@ -21,8 +21,7 @@
     "react-jss": "^10.5.0",
     "react-markdown": "^5.0.3",
     "remark-gfm": "^1.0.0",
-    "subscriptions-transport-ws": "^0.9.18",
-    "universal-cookie": "^4.0.4"
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.19.0",
