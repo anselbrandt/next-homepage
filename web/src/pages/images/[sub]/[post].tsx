@@ -21,6 +21,10 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const { colorMode } = useColorMode();
+  const linkColor = {
+    light: "black",
+    dark: "white",
+  };
   const router = useRouter();
   const sub = router.query.sub as string;
   const post = router.query.post as string;
@@ -53,7 +57,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
         <Box mt="10" mx="2">
           <ChakraLink
             href={fetchedPost.permalink}
-            color={colorMode === "dark" ? "white" : "black"}
+            _visited={{ color: linkColor[colorMode] }}
           >
             <Heading size="sm">{fetchedPost.title}</Heading>
           </ChakraLink>
