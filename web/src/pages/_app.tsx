@@ -17,7 +17,7 @@ App.getInitialProps = async ({ ctx }: any) => {
     pageProps: {
       defaultColor: "purple",
     },
-    cookies: ctx.req.headers.cookie ?? "",
+    cookies: ctx.req?.headers.cookie ?? "",
   };
 };
 
