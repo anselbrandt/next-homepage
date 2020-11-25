@@ -5,6 +5,7 @@ import {
   Heading,
   Text,
   useColorMode,
+  Flex,
 } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../../components/Container";
@@ -12,8 +13,9 @@ import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
 import { Navbar } from "../../../components/Navbar";
 import usePostFetch from "../../../hooks/usePostFetch";
 import { Markdown } from "../../../components/Markdown";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Cookie from "js-cookie";
+import { Favicon } from "../../../components/Favicon";
 
 interface PostProps {
   defaultColor: string;
@@ -32,6 +34,11 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
     subreddit: sub,
     postId: post,
   });
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  const handleClick = () => {
+    setIsChecked((prev) => !prev);
+  };
 
   useEffect(() => {
     const prevSearch = Cookie.get("searchResult");
@@ -55,14 +62,23 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
           </ChakraLink>
         </Box>
         <Box mt="10" mx="2">
-          <Heading size="sm">
-            <ChakraLink
-              href={`${fetchedPost.permalink}`}
-              color={linkColor[colorMode]}
-            >
-              {fetchedPost.title}
-            </ChakraLink>
-          </Heading>
+          <Flex alignItems="center" justifyContent="space-between">
+            <Heading size="sm">
+              <ChakraLink
+                href={`${fetchedPost.permalink}`}
+                color={linkColor[colorMode]}
+              >
+                {fetchedPost.title}
+              </ChakraLink>
+            </Heading>
+            <Box onClick={handleClick}>
+              <Favicon
+                size={8}
+                checked={isChecked}
+                defaultColor={defaultColor}
+              />
+            </Box>
+          </Flex>
 
           <Text fontSize="sm" mt="2" ml="8">
             <ChakraLink href={`${fetchedPost.profile}`}>
