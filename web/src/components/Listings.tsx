@@ -7,6 +7,7 @@ import {
   Flex,
   Spinner,
   Text,
+  useMediaQuery,
 } from "@chakra-ui/core";
 import { Favicon } from "../components/Favicon";
 
@@ -27,6 +28,7 @@ export const Listings: React.FC<ListingsProps> = ({
   linkPrefix,
   handleFav,
 }) => {
+  const [isTouchScreen] = useMediaQuery("(hover: none)");
   return (
     <Grid
       templateColumns="repeat(3, 1fr)"
@@ -47,32 +49,34 @@ export const Listings: React.FC<ListingsProps> = ({
                     width="100%"
                     height="100%"
                   />
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    position="absolute"
-                    width="100%"
-                    height="100%"
-                    opacity={0}
-                    transition="opacity 0.5s"
-                    backgroundColor="rgba(90,0,10,0.4)"
-                    _hover={{ opacity: 1 }}
-                  >
-                    <Text as="b" fontSize="1rem" m="1rem" color="white">
-                      {listing.title}
-                    </Text>
-                    <Box
-                      as="button"
+                  {!isTouchScreen ? (
+                    <Flex
+                      justifyContent="center"
+                      alignItems="center"
                       position="absolute"
-                      bottom={0}
-                      right={0}
-                      padding="3"
-                      id={listing.id}
-                      onClick={handleFav}
+                      width="100%"
+                      height="100%"
+                      opacity={0}
+                      transition="opacity 0.5s"
+                      backgroundColor="rgba(90,0,10,0.4)"
+                      _hover={{ opacity: 1 }}
                     >
-                      <Favicon checked={false} overlay={true} size={8} />
-                    </Box>
-                  </Flex>
+                      <Text as="b" fontSize="1rem" m="1rem" color="white">
+                        {listing.title}
+                      </Text>
+                      <Box
+                        as="button"
+                        position="absolute"
+                        bottom={0}
+                        right={0}
+                        padding="3"
+                        id={listing.id}
+                        onClick={handleFav}
+                      >
+                        <Favicon checked={false} overlay={true} size={8} />
+                      </Box>
+                    </Flex>
+                  ) : null}
                 </ChakraLink>
               </AspectRatio>
             </Box>
@@ -89,32 +93,34 @@ export const Listings: React.FC<ListingsProps> = ({
                     width="100%"
                     height="100%"
                   />
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    position="absolute"
-                    width="100%"
-                    height="100%"
-                    opacity={0}
-                    transition="opacity 0.5s"
-                    backgroundColor="rgba(90,0,10,0.4)"
-                    _hover={{ opacity: 1 }}
-                  >
-                    <Text as="b" fontSize="1rem" m="1rem" color="white">
-                      {listing.title}
-                    </Text>
-                    <Box
-                      as="button"
+                  {!isTouchScreen ? (
+                    <Flex
+                      justifyContent="center"
+                      alignItems="center"
                       position="absolute"
-                      bottom={0}
-                      right={0}
-                      padding="3"
-                      id={listing.id}
-                      onClick={handleFav}
+                      width="100%"
+                      height="100%"
+                      opacity={0}
+                      transition="opacity 0.5s"
+                      backgroundColor="rgba(90,0,10,0.4)"
+                      _hover={{ opacity: 1 }}
                     >
-                      <Favicon checked={false} overlay={true} size={8} />
-                    </Box>
-                  </Flex>
+                      <Text as="b" fontSize="1rem" m="1rem" color="white">
+                        {listing.title}
+                      </Text>
+                      <Box
+                        as="button"
+                        position="absolute"
+                        bottom={0}
+                        right={0}
+                        padding="3"
+                        id={listing.id}
+                        onClick={handleFav}
+                      >
+                        <Favicon checked={false} overlay={true} size={8} />
+                      </Box>
+                    </Flex>
+                  ) : null}
                 </ChakraLink>
               </AspectRatio>
             </Box>
