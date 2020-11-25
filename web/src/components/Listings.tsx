@@ -8,6 +8,7 @@ import {
   Spinner,
   Text,
 } from "@chakra-ui/core";
+import { Favicon } from "../components/Favicon";
 
 interface ListingsProps {
   fetchedListings: any[];
@@ -58,6 +59,15 @@ export const Listings: React.FC<ListingsProps> = ({
                     <Text as="b" fontSize="1rem" m="1rem" color="white">
                       {listing.title}
                     </Text>
+                    <Box
+                      zIndex={10}
+                      position="absolute"
+                      bottom={0}
+                      right={0}
+                      margin="4"
+                    >
+                      <Favicon checked={false} overlay={true} size={8} />
+                    </Box>
                   </Flex>
                 </ChakraLink>
               </AspectRatio>
@@ -89,6 +99,15 @@ export const Listings: React.FC<ListingsProps> = ({
                     <Text as="b" fontSize="1rem" m="1rem" color="white">
                       {listing.title}
                     </Text>
+                    <Box
+                      zIndex={10}
+                      position="absolute"
+                      bottom={0}
+                      right={0}
+                      margin="4"
+                    >
+                      <Favicon checked={false} overlay={true} size={8} />
+                    </Box>
                   </Flex>
                 </ChakraLink>
               </AspectRatio>
