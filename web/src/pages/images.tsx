@@ -41,6 +41,12 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
   const bottomObserver = useRef<any>();
   const [bottom, setBottom] = useState<any>(null);
 
+  const handleFav = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const id = event.currentTarget.id;
+    console.log(id);
+  };
+
   const handleSearch = (event: any) => {
     const value = event.currentTarget.value;
     setSearchTerm(value);
@@ -149,6 +155,7 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
           sub={subreddit}
           setBottom={setBottom}
           linkPrefix={"images/"}
+          handleFav={handleFav}
         />
         {(displayedListings.length === 0 && !Cookie.get("prevSearch")) ||
         searchTerm === "" ? (

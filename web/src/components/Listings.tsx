@@ -16,6 +16,7 @@ interface ListingsProps {
   sub: string | undefined;
   setBottom: any;
   linkPrefix?: string | null;
+  handleFav: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export const Listings: React.FC<ListingsProps> = ({
@@ -24,6 +25,7 @@ export const Listings: React.FC<ListingsProps> = ({
   sub,
   isLoading,
   linkPrefix,
+  handleFav,
 }) => {
   return (
     <Grid
@@ -60,11 +62,13 @@ export const Listings: React.FC<ListingsProps> = ({
                       {listing.title}
                     </Text>
                     <Box
-                      zIndex={10}
+                      as="button"
                       position="absolute"
                       bottom={0}
                       right={0}
                       margin="4"
+                      id={listing.id}
+                      onClick={handleFav}
                     >
                       <Favicon checked={false} overlay={true} size={8} />
                     </Box>
@@ -100,11 +104,13 @@ export const Listings: React.FC<ListingsProps> = ({
                       {listing.title}
                     </Text>
                     <Box
-                      zIndex={10}
+                      as="button"
                       position="absolute"
                       bottom={0}
                       right={0}
                       margin="4"
+                      id={listing.id}
+                      onClick={handleFav}
                     >
                       <Favicon checked={false} overlay={true} size={8} />
                     </Box>
