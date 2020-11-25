@@ -150,7 +150,8 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
           setBottom={setBottom}
           linkPrefix={"images/"}
         />
-        {displayedListings.length === 0 && !Cookie.get("prevSearch") ? (
+        {(displayedListings.length === 0 && !Cookie.get("prevSearch")) ||
+        searchTerm === "" ? (
           <Directory />
         ) : null}
       </Box>
