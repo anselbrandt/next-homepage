@@ -10,11 +10,9 @@ export const Navbar: React.FC<NavbarProps> = ({ defaultColor, children }) => {
     light: `${defaultColor}.500`,
     dark: `${defaultColor}.200`,
   };
-  const bgColor = { light: "gray.50", dark: "gray.900" };
   return (
     <Box
       color={linkColor[colorMode]}
-      bg={bgColor[colorMode]}
       position="sticky"
       mt="1rem"
       mr="6rem"
