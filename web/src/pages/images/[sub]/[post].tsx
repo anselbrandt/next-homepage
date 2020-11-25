@@ -55,9 +55,15 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
           </ChakraLink>
         </Box>
         <Box mt="10" mx="2">
-          <ChakraLink href={fetchedPost.permalink} color={linkColor[colorMode]}>
-            <Heading size="sm">{fetchedPost.title}</Heading>
-          </ChakraLink>
+          <Heading size="sm">
+            <ChakraLink
+              href={fetchedPost.permalink}
+              color={linkColor[colorMode]}
+            >
+              {fetchedPost.title}
+            </ChakraLink>
+          </Heading>
+
           <Text fontSize="sm" mt="2" ml="8">
             <ChakraLink href={fetchedPost.profile}>
               {fetchedPost.author}
