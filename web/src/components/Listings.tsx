@@ -66,7 +66,7 @@ export const Listings: React.FC<ListingsProps> = ({
                       position="absolute"
                       bottom={0}
                       right={0}
-                      margin="4"
+                      padding="3"
                       id={listing.id}
                       onClick={handleFav}
                     >
@@ -108,7 +108,7 @@ export const Listings: React.FC<ListingsProps> = ({
                       position="absolute"
                       bottom={0}
                       right={0}
-                      margin="4"
+                      padding="3"
                       id={listing.id}
                       onClick={handleFav}
                     >
