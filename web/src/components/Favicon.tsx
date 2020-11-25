@@ -1,5 +1,5 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { useColorMode } from "@chakra-ui/core";
+import { useColorMode, IconButton } from "@chakra-ui/core";
 import colors from "../utils/colors";
 
 interface FaviconProps {
@@ -19,14 +19,21 @@ export const Favicon: React.FC<FaviconProps> = ({
     dark: colors[defaultColor][200],
   };
   return (
-    <StarIcon
-      boxSize={size}
-      color={color[colorMode]}
-      style={{
-        stroke: `${color[colorMode]}`,
-        strokeWidth: "1",
-        fillOpacity: checked ? 1 : 0,
-      }}
+    <IconButton
+      aria-label="Favorite"
+      colorScheme={defaultColor}
+      variant="ghost"
+      icon={
+        <StarIcon
+          boxSize={size}
+          color={color[colorMode]}
+          style={{
+            stroke: `${color[colorMode]}`,
+            strokeWidth: "1",
+            fillOpacity: checked ? 1 : 0,
+          }}
+        />
+      }
     />
   );
 };

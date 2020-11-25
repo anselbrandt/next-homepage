@@ -6,6 +6,7 @@ import {
   Text,
   useColorMode,
   Flex,
+  useToast,
 } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../../components/Container";
@@ -16,6 +17,7 @@ import { Markdown } from "../../../components/Markdown";
 import { useEffect, useState } from "react";
 import Cookie from "js-cookie";
 import { Favicon } from "../../../components/Favicon";
+import colors from "../../../utils/colors";
 
 interface PostProps {
   defaultColor: string;
@@ -27,6 +29,14 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
     light: "black",
     dark: "white",
   };
+  const textColor = {
+    light: "white",
+    dark: "black",
+  };
+  const color = {
+    light: colors[defaultColor][500],
+    dark: colors[defaultColor][200],
+  };
   const router = useRouter();
   const sub = router.query.sub as string;
   const post = router.query.post as string;
@@ -34,9 +44,19 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
     subreddit: sub,
     postId: post,
   });
+  const toast = useToast();
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const handleClick = () => {
+    toast({
+      duration: 3000,
+      isClosable: true,
+      render: () => (
+        <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
+          {!isChecked ? "Added to favorites" : "Removed from favorites"}
+        </Box>
+      ),
+    });
     setIsChecked((prev) => !prev);
   };
 
@@ -73,7 +93,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
             </Heading>
             <Box onClick={handleClick}>
               <Favicon
-                size={8}
+                size={7}
                 checked={isChecked}
                 defaultColor={defaultColor}
               />
