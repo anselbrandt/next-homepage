@@ -10,7 +10,7 @@ const usePostFetch = ({ subreddit, postId }: usePostFetchProps) => {
   const { token } = useTokenFetch();
   const [fetchedPost, setFetchedPost] = useState<any[any]>([]);
   const [fetchedComments, setFetchedComments] = useState<any[]>([]);
-  const [isPostLoading, setIsPostLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setFetchedPost([]);
@@ -18,7 +18,7 @@ const usePostFetch = ({ subreddit, postId }: usePostFetchProps) => {
   }, [postId, subreddit]);
 
   useEffect(() => {
-    setIsPostLoading(true);
+    setIsLoading(true);
 
     const searchParams = new URLSearchParams([
       ["article", postId],
@@ -96,7 +96,7 @@ const usePostFetch = ({ subreddit, postId }: usePostFetchProps) => {
           });
           setFetchedPost(post);
           setFetchedComments([...comments]);
-          setIsPostLoading(false);
+          setIsLoading(false);
         })
         .catch((error) => {
           if (error.name === "AbortError") return;
@@ -105,7 +105,7 @@ const usePostFetch = ({ subreddit, postId }: usePostFetchProps) => {
     }
     return () => controller.abort();
   }, [subreddit, postId, token]);
-  return { fetchedPost, fetchedComments, isPostLoading };
+  return { fetchedPost, fetchedComments, isLoading };
 };
 
 export default usePostFetch;

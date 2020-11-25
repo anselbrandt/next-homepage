@@ -40,7 +40,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const router = useRouter();
   const sub = router.query.sub as string;
   const post = router.query.post as string;
-  const { fetchedPost, fetchedComments } = usePostFetch({
+  const { fetchedPost, fetchedComments, isLoading } = usePostFetch({
     subreddit: sub,
     postId: post,
   });
@@ -91,13 +91,15 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
                 {fetchedPost.title}
               </ChakraLink>
             </Heading>
-            <Box onClick={handleClick}>
-              <Favicon
-                size={7}
-                checked={isChecked}
-                defaultColor={defaultColor}
-              />
-            </Box>
+            {!isLoading ? (
+              <Box onClick={handleClick}>
+                <Favicon
+                  size={7}
+                  checked={isChecked}
+                  defaultColor={defaultColor}
+                />
+              </Box>
+            ) : null}
           </Flex>
 
           <Text fontSize="sm" mt="2" ml="8">
