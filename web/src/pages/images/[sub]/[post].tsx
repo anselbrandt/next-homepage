@@ -18,12 +18,17 @@ import { useEffect, useState } from "react";
 import Cookie from "js-cookie";
 import { Favicon } from "../../../components/Favicon";
 import colors from "../../../utils/colors";
+import { withApollo } from "../../../utils/withApollo";
+import { useGetAllLikesQuery } from "../../../generated/graphql";
 
 interface PostProps {
   defaultColor: string;
 }
 
 const Post: React.FC<PostProps> = ({ defaultColor }) => {
+  const { data } = useGetAllLikesQuery();
+  const likes = data?.getAllLikes.likes.map((like: any) => like.postId);
+
   const { colorMode } = useColorMode();
   const linkColor = {
     light: "black",
@@ -95,7 +100,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
               <Box onClick={handleClick}>
                 <Favicon
                   size={7}
-                  checked={isChecked}
+                  checked={likes ? likes.includes(post) : false}
                   defaultColor={defaultColor}
                 />
               </Box>
@@ -129,4 +134,4 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
   );
 };
 
-export default Post;
+export default withApollo({ ssr: true })(Post);
