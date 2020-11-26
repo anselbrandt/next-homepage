@@ -17,7 +17,7 @@ interface ListingsProps {
   sub: string | undefined;
   setBottom: any;
   linkPrefix?: string | null;
-  handleFav: (event: React.MouseEvent<HTMLDivElement>) => void;
+  handleFav?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export const Listings: React.FC<ListingsProps> = ({
@@ -41,7 +41,7 @@ export const Listings: React.FC<ListingsProps> = ({
           return (
             <Box key={listing.id} ref={setBottom}>
               <AspectRatio ratio={1} position="relative">
-                <ChakraLink href={`${linkPrefix}${sub}/${listing.id}`}>
+                <ChakraLink href={`${linkPrefix || ""}${sub}/${listing.id}`}>
                   <Image
                     position="absolute"
                     src={listing.preview}
@@ -85,7 +85,7 @@ export const Listings: React.FC<ListingsProps> = ({
           return (
             <Box key={listing.id}>
               <AspectRatio ratio={1} position="relative">
-                <ChakraLink href={`${linkPrefix}${sub}/${listing.id}`}>
+                <ChakraLink href={`${linkPrefix || ""}${sub}/${listing.id}`}>
                   <Image
                     position="absolute"
                     src={listing.preview}
