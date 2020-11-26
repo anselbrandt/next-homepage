@@ -16,7 +16,7 @@ export type Query = {
   hello: Status;
   me?: Maybe<User>;
   getLike?: Maybe<Like>;
-  allLikes: Likes;
+  getAllLikes: Likes;
   likes: PaginatedLikes;
   Favorite?: Maybe<Favorite>;
 };
@@ -63,7 +63,8 @@ export type Like = {
 
 export type Favorite = {
   __typename?: 'Favorite';
-  link: Scalars['String'];
+  subreddit: Scalars['String'];
+  title: Scalars['String'];
   preview: Scalars['String'];
   points: Scalars['Int'];
   createdAt: Scalars['String'];
@@ -138,7 +139,8 @@ export type UsernamePasswordInput = {
 
 export type LikeInput = {
   postId: Scalars['String'];
-  link: Scalars['String'];
+  subreddit: Scalars['String'];
+  title: Scalars['String'];
   preview: Scalars['String'];
 };
 
@@ -214,6 +216,20 @@ export type RegisterMutation = (
   & { register: (
     { __typename?: 'UserResponse' }
     & RegularUserResponseFragment
+  ) }
+);
+
+export type GetAllLikesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllLikesQuery = (
+  { __typename?: 'Query' }
+  & { getAllLikes: (
+    { __typename?: 'Likes' }
+    & { likes: Array<(
+      { __typename?: 'Like' }
+      & Pick<Like, 'postId'>
+    )> }
   ) }
 );
 
@@ -377,6 +393,40 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const GetAllLikesDocument = gql`
+    query GetAllLikes {
+  getAllLikes {
+    likes {
+      postId
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllLikesQuery__
+ *
+ * To run a query within a React component, call `useGetAllLikesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllLikesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllLikesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllLikesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllLikesQuery, GetAllLikesQueryVariables>) {
+        return Apollo.useQuery<GetAllLikesQuery, GetAllLikesQueryVariables>(GetAllLikesDocument, baseOptions);
+      }
+export function useGetAllLikesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllLikesQuery, GetAllLikesQueryVariables>) {
+          return Apollo.useLazyQuery<GetAllLikesQuery, GetAllLikesQueryVariables>(GetAllLikesDocument, baseOptions);
+        }
+export type GetAllLikesQueryHookResult = ReturnType<typeof useGetAllLikesQuery>;
+export type GetAllLikesLazyQueryHookResult = ReturnType<typeof useGetAllLikesLazyQuery>;
+export type GetAllLikesQueryResult = Apollo.QueryResult<GetAllLikesQuery, GetAllLikesQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
