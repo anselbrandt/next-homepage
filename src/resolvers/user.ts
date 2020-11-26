@@ -13,7 +13,16 @@ import argon2 from "argon2";
 import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
 import { getConnection } from "typeorm";
-import { COOKIE_NAME } from "../constants";
+import { COOKIE_NAME, SECRET } from "../constants";
+import * as cookieJar from "cookie-signature";
+
+@ObjectType()
+class Cookie {
+  @Field()
+  name: string;
+  @Field()
+  value: string;
+}
 
 @ObjectType()
 class FieldError {
@@ -29,6 +38,8 @@ class UserResponse {
   errors?: FieldError[];
   @Field(() => User, { nullable: true })
   user?: User;
+  @Field(() => Cookie, { nullable: true })
+  cookie?: Cookie;
 }
 
 @Resolver(User)
@@ -115,8 +126,15 @@ export class UserResolver {
       };
     }
     req.session.userId = user.id;
+    const signedCookie = cookieJar.sign(req.sessionID!, SECRET);
+    const cookie = {
+      name: COOKIE_NAME,
+      value: encodeURIComponent(`s:${signedCookie}`),
+    };
+
     return {
       user,
+      cookie,
     };
   }
 

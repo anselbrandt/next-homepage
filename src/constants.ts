@@ -14,5 +14,5 @@ export const GOOGLEKEY = process.env.GOOGLEKEY;
 export const REDIS_URL = process.env.REDIS_URL || `127.0.0.1:6379`;
 export const DATABASE_URL = process.env.DATABASE_URL;
 export const CLIENT_ORIGIN =
-  process.env.CLIENT_ORIGIN || "http://mini.local:3000";
+  process.env.CLIENT_ORIGIN || "http://localhost:3000";
 export const PORT = process.env.PORT || 4000;
