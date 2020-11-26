@@ -63,7 +63,7 @@ export class LikeResolver {
 
   @Query(() => Likes)
   @UseMiddleware(isAuth)
-  async allLikes(@Ctx() { req }: MyContext): Promise<Likes> {
+  async getAllLikes(@Ctx() { req }: MyContext): Promise<Likes> {
     const likes = await Like.find({ where: { userId: req.session.userId } });
     return { likes: likes };
   }
