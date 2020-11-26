@@ -23,7 +23,9 @@ class LikeInput {
   @Field()
   postId: string;
   @Field()
-  link: string;
+  subreddit: string;
+  @Field()
+  title: string;
   @Field()
   preview: string;
 }
@@ -106,7 +108,8 @@ export class LikeResolver {
     if (!existingFavorite) {
       await Favorite.create({
         postId: input.postId,
-        link: input.link,
+        subreddit: input.subreddit,
+        title: input.title,
         preview: input.preview,
       }).save();
     } else {

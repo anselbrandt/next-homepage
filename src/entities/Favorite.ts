@@ -16,7 +16,11 @@ export class Favorite extends BaseEntity {
 
   @Field()
   @Column()
-  link!: string;
+  subreddit!: string;
+
+  @Field()
+  @Column()
+  title!: string;
 
   @Field()
   @Column()
