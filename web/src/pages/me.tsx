@@ -19,7 +19,7 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
       </Navbar>
       <Box mt="30vh" maxW="48rem">
         <Box>
-          {data ? `logged in as ${data?.me?.username}` : "not logged in"}
+          {data?.me ? `logged in as ${data?.me?.username}` : "not logged in"}
         </Box>
       </Box>
     </Container>
