@@ -21,7 +21,7 @@ const Login: React.FC<LoginProps> = ({ defaultColor }) => {
     <Container minHeight="100vh">
       <DarkModeSwitch defaultColor={defaultColor} />
       <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/home">Home</ChakraLink>
+        <ChakraLink href="/">Home</ChakraLink>
       </Navbar>
       <Formik
         initialValues={{ usernameOrEmail: "", password: "" }}
