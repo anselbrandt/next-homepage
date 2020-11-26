@@ -1,3 +1,15 @@
+/*
+mutation {
+  login(usernameOrEmail:"ansel", password:"ansel") {
+    user {
+      username
+      id
+      email
+    }
+  }
+}
+*/
+
 import {
   Resolver,
   Mutation,
@@ -77,8 +89,8 @@ export class UserResolver {
         .returning("*")
         .execute();
       user = result.raw[0];
-    } catch (err) {
-      if (err.code === "23505") {
+    } catch (error) {
+      if (error.detail.includes("already exists")) {
         return {
           errors: [
             {
