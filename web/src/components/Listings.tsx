@@ -18,6 +18,7 @@ interface ListingsProps {
   setBottom: any;
   linkPrefix?: string | null;
   handleFav?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  likesData?: string[];
 }
 
 export const Listings: React.FC<ListingsProps> = ({
@@ -27,6 +28,7 @@ export const Listings: React.FC<ListingsProps> = ({
   isLoading,
   linkPrefix,
   handleFav,
+  likesData,
 }) => {
   const [isTouchScreen] = useMediaQuery("(hover: none)");
   return (
@@ -73,7 +75,13 @@ export const Listings: React.FC<ListingsProps> = ({
                         id={listing.id}
                         onClick={handleFav}
                       >
-                        <Favicon checked={false} overlay={true} size={8} />
+                        <Favicon
+                          checked={
+                            likesData ? likesData.includes(listing.id) : false
+                          }
+                          overlay={true}
+                          size={8}
+                        />
                       </Box>
                     </Flex>
                   ) : null}
@@ -117,7 +125,13 @@ export const Listings: React.FC<ListingsProps> = ({
                         id={listing.id}
                         onClick={handleFav}
                       >
-                        <Favicon checked={false} overlay={true} size={8} />
+                        <Favicon
+                          checked={
+                            likesData ? likesData.includes(listing.id) : false
+                          }
+                          overlay={true}
+                          size={8}
+                        />
                       </Box>
                     </Flex>
                   ) : null}

@@ -6,12 +6,20 @@ import { DarkModeSwitch } from "../../components/DarkModeSwitch";
 import { Navbar } from "../../components/Navbar";
 import useListingsFetch from "../../hooks/useListingsFetch";
 import { Listings } from "../../components/Listings";
+import { withApollo } from "../../utils/withApollo";
+import {
+  useGetAllLikesQuery,
+  useAddLikeMutation,
+  GetAllLikesDocument,
+} from "../../generated/graphql";
 
 interface SubProps {
   defaultColor: string;
 }
 
 const Sub: React.FC<SubProps> = ({ defaultColor }) => {
+  const { data } = useGetAllLikesQuery();
+  const likesData = data?.getAllLikes.likes.map((like: any) => like.postId);
   const router = useRouter();
   const sub = router.query.sub as string;
   const [cursor, setCursor] = useState<string | null>(null);
@@ -22,6 +30,11 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
 
   const bottomObserver = useRef<any>();
   const [bottom, setBottom] = useState<any>(null);
+
+  const handleFav = (event: any) => {
+    event.preventDefault();
+    console.log(event.currentTarget.id.id);
+  };
 
   useEffect(() => {
     if (isLoading) return;
@@ -56,9 +69,11 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
         isLoading={isLoading}
         sub={sub}
         setBottom={setBottom}
+        likesData={likesData}
+        handleFav={handleFav}
       />
     </Container>
   );
 };
 
-export default Sub;
+export default withApollo({ ssr: true })(Sub);
