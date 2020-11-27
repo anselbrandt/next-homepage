@@ -33,7 +33,7 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
 
   const handleFav = (event: any) => {
     event.preventDefault();
-    console.log(event.currentTarget.id.id);
+    console.log(event.currentTarget.id);
   };
 
   useEffect(() => {
