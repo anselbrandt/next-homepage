@@ -184,6 +184,16 @@ export type RegularUserResponseFragment = (
   )> }
 );
 
+export type AddLikeMutationVariables = Exact<{
+  input: LikeInput;
+}>;
+
+
+export type AddLikeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addLike'>
+);
+
 export type LoginMutationVariables = Exact<{
   usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
@@ -299,6 +309,36 @@ export const RegularUserResponseFragmentDoc = gql`
     ${RegularErrorFragmentDoc}
 ${RegularUserFragmentDoc}
 ${RegularCookieFragmentDoc}`;
+export const AddLikeDocument = gql`
+    mutation AddLike($input: LikeInput!) {
+  addLike(input: $input)
+}
+    `;
+export type AddLikeMutationFn = Apollo.MutationFunction<AddLikeMutation, AddLikeMutationVariables>;
+
+/**
+ * __useAddLikeMutation__
+ *
+ * To run a mutation, you first call `useAddLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addLikeMutation, { data, loading, error }] = useAddLikeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddLikeMutation(baseOptions?: Apollo.MutationHookOptions<AddLikeMutation, AddLikeMutationVariables>) {
+        return Apollo.useMutation<AddLikeMutation, AddLikeMutationVariables>(AddLikeDocument, baseOptions);
+      }
+export type AddLikeMutationHookResult = ReturnType<typeof useAddLikeMutation>;
+export type AddLikeMutationResult = Apollo.MutationResult<AddLikeMutation>;
+export type AddLikeMutationOptions = Apollo.BaseMutationOptions<AddLikeMutation, AddLikeMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {
   login(usernameOrEmail: $usernameOrEmail, password: $password) {

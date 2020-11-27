@@ -14,12 +14,16 @@ import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
 import { Navbar } from "../../../components/Navbar";
 import usePostFetch from "../../../hooks/usePostFetch";
 import { Markdown } from "../../../components/Markdown";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Cookie from "js-cookie";
 import { Favicon } from "../../../components/Favicon";
 import colors from "../../../utils/colors";
 import { withApollo } from "../../../utils/withApollo";
-import { useGetAllLikesQuery } from "../../../generated/graphql";
+import {
+  useGetAllLikesQuery,
+  useAddLikeMutation,
+  GetAllLikesDocument,
+} from "../../../generated/graphql";
 
 interface PostProps {
   defaultColor: string;
@@ -27,7 +31,8 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const { data } = useGetAllLikesQuery();
-  const likes = data?.getAllLikes.likes.map((like: any) => like.postId);
+  const likesData = data?.getAllLikes.likes.map((like: any) => like.postId);
+  const [addLike] = useAddLikeMutation();
 
   const { colorMode } = useColorMode();
   const linkColor = {
@@ -50,19 +55,43 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
     postId: post,
   });
   const toast = useToast();
-  const [isChecked, setIsChecked] = useState<boolean>(false);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     toast({
       duration: 3000,
       isClosable: true,
       render: () => (
         <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
-          {!isChecked ? "Added to favorites" : "Removed from favorites"}
+          You clicked.
         </Box>
       ),
     });
-    setIsChecked((prev) => !prev);
+    const { errors } = await addLike({
+      variables: {
+        input: {
+          postId: post,
+          subreddit: sub,
+          title: fetchedPost.title,
+          preview: fetchedPost.preview,
+        },
+      },
+      update: (store, { data }) => {
+        const likeData: any = store.readQuery({
+          query: GetAllLikesDocument,
+        });
+        store.writeQuery({
+          query: GetAllLikesDocument,
+          data: {
+            getAllLikes: {
+              likes: [...likeData!.getAllLikes.likes, data!.addLike],
+            },
+          },
+        });
+      },
+    });
+    if (errors) {
+      router.push("/login");
+    }
   };
 
   useEffect(() => {
@@ -100,7 +129,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
               <Box onClick={handleClick}>
                 <Favicon
                   size={7}
-                  checked={likes ? likes.includes(post) : false}
+                  checked={likesData ? likesData.includes(post) : false}
                   defaultColor={defaultColor}
                 />
               </Box>

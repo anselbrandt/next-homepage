@@ -1,0 +1,3 @@
+mutation AddLike($input: LikeInput!) {
+  addLike(input: $input)
+}
