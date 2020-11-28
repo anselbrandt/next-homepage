@@ -253,6 +253,25 @@ export type GetAllLikesQuery = (
   ) }
 );
 
+export type LikesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LikesQuery = (
+  { __typename?: 'Query' }
+  & { likes: (
+    { __typename?: 'PaginatedLikes' }
+    & Pick<PaginatedLikes, 'hasMore'>
+    & { likes: Array<(
+      { __typename?: 'Like' }
+      & Pick<Like, 'createdAt' | 'postId'>
+      & { details: (
+        { __typename?: 'Favorite' }
+        & Pick<Favorite, 'subreddit' | 'preview'>
+      ) }
+    )> }
+  ) }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -507,6 +526,46 @@ export function useGetAllLikesLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetAllLikesQueryHookResult = ReturnType<typeof useGetAllLikesQuery>;
 export type GetAllLikesLazyQueryHookResult = ReturnType<typeof useGetAllLikesLazyQuery>;
 export type GetAllLikesQueryResult = Apollo.QueryResult<GetAllLikesQuery, GetAllLikesQueryVariables>;
+export const LikesDocument = gql`
+    query Likes {
+  likes(limit: 25, cursor: "") {
+    hasMore
+    likes {
+      createdAt
+      postId
+      details {
+        subreddit
+        preview
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useLikesQuery__
+ *
+ * To run a query within a React component, call `useLikesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLikesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLikesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLikesQuery(baseOptions?: Apollo.QueryHookOptions<LikesQuery, LikesQueryVariables>) {
+        return Apollo.useQuery<LikesQuery, LikesQueryVariables>(LikesDocument, baseOptions);
+      }
+export function useLikesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LikesQuery, LikesQueryVariables>) {
+          return Apollo.useLazyQuery<LikesQuery, LikesQueryVariables>(LikesDocument, baseOptions);
+        }
+export type LikesQueryHookResult = ReturnType<typeof useLikesQuery>;
+export type LikesLazyQueryHookResult = ReturnType<typeof useLikesLazyQuery>;
+export type LikesQueryResult = Apollo.QueryResult<LikesQuery, LikesQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

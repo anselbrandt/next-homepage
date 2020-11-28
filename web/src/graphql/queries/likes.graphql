@@ -1,0 +1,13 @@
+query Likes {
+  likes(limit: 25, cursor: "") {
+    hasMore
+    likes {
+      createdAt
+      postId
+      details {
+        subreddit
+        preview
+      }
+    }
+  }
+}
