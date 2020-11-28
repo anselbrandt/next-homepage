@@ -30,7 +30,7 @@ const Favorites: React.FC<FavoritesProps> = ({ defaultColor }) => {
   const [fetchedListings, setFetchedListings] = useState<any[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(false);
-  const { data, error, loading, fetchMore, variables } = useLikesQuery({
+  const { data, loading } = useLikesQuery({
     variables: {
       limit: 25,
       cursor: cursor,
