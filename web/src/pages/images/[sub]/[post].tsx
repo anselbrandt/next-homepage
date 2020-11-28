@@ -63,18 +63,20 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const handleClick = async () => {
     if (!meData?.me?.id) {
       router.push("/login");
+    } else {
+      toast({
+        duration: 2000,
+        isClosable: true,
+        render: () => (
+          <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
+            {likesData && likesData.includes(post)
+              ? "Removed from favs"
+              : "Added to favs"}
+          </Box>
+        ),
+      });
     }
-    toast({
-      duration: 2000,
-      isClosable: true,
-      render: () => (
-        <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
-          {likesData && likesData.includes(post)
-            ? "Removed from favs"
-            : "Added to favs"}
-        </Box>
-      ),
-    });
+
     if (likesData && likesData.includes(post)) {
       const { errors } = await removeLike({
         variables: {
