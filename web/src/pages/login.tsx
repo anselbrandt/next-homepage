@@ -47,7 +47,7 @@ const Login: React.FC<LoginProps> = ({ defaultColor }) => {
             const expires = d.toUTCString();
             document.cookie = `${response.data.login.cookie!.name}=${
               response.data.login.cookie!.value
-            }; expires=${expires};`;
+            }; path=/; expires=${expires};`;
             if (typeof router.query.next === "string") {
               router.push(router.query.next);
             } else {
