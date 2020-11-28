@@ -5,6 +5,7 @@ query Likes($limit: Int!, $cursor: String) {
       createdAt
       postId
       details {
+        title
         subreddit
         preview
       }

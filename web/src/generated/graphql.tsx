@@ -269,7 +269,7 @@ export type LikesQuery = (
       & Pick<Like, 'createdAt' | 'postId'>
       & { details: (
         { __typename?: 'Favorite' }
-        & Pick<Favorite, 'subreddit' | 'preview'>
+        & Pick<Favorite, 'title' | 'subreddit' | 'preview'>
       ) }
     )> }
   ) }
@@ -537,6 +537,7 @@ export const LikesDocument = gql`
       createdAt
       postId
       details {
+        title
         subreddit
         preview
       }
