@@ -1,4 +1,9 @@
-import { Link as ChakraLink } from "@chakra-ui/core";
+import {
+  Link as ChakraLink,
+  useToast,
+  useColorMode,
+  Box,
+} from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { useRef, useEffect, useState } from "react";
 import { Container } from "../../components/Container";
@@ -11,7 +16,10 @@ import {
   useGetAllLikesQuery,
   useAddLikeMutation,
   GetAllLikesDocument,
+  useMeQuery,
+  useRemoveLikeMutation,
 } from "../../generated/graphql";
+import colors from "../../utils/colors";
 
 interface SubProps {
   defaultColor: string;
@@ -27,13 +35,95 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
     subreddit: sub,
     cursor: cursor,
   });
+  const { data: meData } = useMeQuery();
+  const [addLike] = useAddLikeMutation();
+  const [removeLike] = useRemoveLikeMutation();
 
   const bottomObserver = useRef<any>();
   const [bottom, setBottom] = useState<any>(null);
 
-  const handleFav = (event: any) => {
+  const { colorMode } = useColorMode();
+  const textColor = {
+    light: "white",
+    dark: "black",
+  };
+  const color = {
+    light: colors[defaultColor][500],
+    dark: colors[defaultColor][200],
+  };
+
+  const toast = useToast();
+
+  const handleFav = async (event: any) => {
     event.preventDefault();
-    console.log(event.currentTarget.id);
+    const id = event.currentTarget.id;
+    const post = fetchedListings.filter((item) => item.id === id)[0];
+    if (!meData?.me?.id) {
+      router.push("/login");
+    }
+    toast({
+      duration: 2000,
+      isClosable: true,
+      render: () => (
+        <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
+          {likesData && likesData.includes(id)
+            ? "Removed from favs"
+            : "Added to favs"}
+        </Box>
+      ),
+    });
+    if (likesData && likesData.includes(id)) {
+      const { errors } = await removeLike({
+        variables: {
+          postId: id,
+        },
+        update: (store) => {
+          const likeData: any = store.readQuery({
+            query: GetAllLikesDocument,
+          });
+          store.writeQuery({
+            query: GetAllLikesDocument,
+            data: {
+              getAllLikes: {
+                likes: [...likeData!.getAllLikes.likes].filter(
+                  (value: any) => value.postId !== id
+                ),
+              },
+            },
+          });
+        },
+      });
+      if (errors) {
+        router.push("/login");
+      }
+    } else {
+      const { errors } = await addLike({
+        variables: {
+          input: {
+            postId: id,
+            subreddit: sub,
+            title: post.title,
+            preview: post.preview,
+          },
+        },
+        update: (store) => {
+          const likeData: any = store.readQuery({
+            query: GetAllLikesDocument,
+          });
+          store.writeQuery({
+            query: GetAllLikesDocument,
+            data: {
+              getAllLikes: {
+                likes: [...likeData!.getAllLikes.likes, { postId: id }],
+              },
+            },
+          });
+        },
+      });
+      if (errors) {
+        router.push("/login");
+      }
+    }
   };
 
   useEffect(() => {
