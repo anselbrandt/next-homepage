@@ -229,6 +229,16 @@ export type RegisterMutation = (
   ) }
 );
 
+export type RemoveLikeMutationVariables = Exact<{
+  postId: Scalars['String'];
+}>;
+
+
+export type RemoveLikeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeLike'>
+);
+
 export type GetAllLikesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -433,6 +443,36 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RemoveLikeDocument = gql`
+    mutation RemoveLike($postId: String!) {
+  removeLike(postId: $postId)
+}
+    `;
+export type RemoveLikeMutationFn = Apollo.MutationFunction<RemoveLikeMutation, RemoveLikeMutationVariables>;
+
+/**
+ * __useRemoveLikeMutation__
+ *
+ * To run a mutation, you first call `useRemoveLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeLikeMutation, { data, loading, error }] = useRemoveLikeMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useRemoveLikeMutation(baseOptions?: Apollo.MutationHookOptions<RemoveLikeMutation, RemoveLikeMutationVariables>) {
+        return Apollo.useMutation<RemoveLikeMutation, RemoveLikeMutationVariables>(RemoveLikeDocument, baseOptions);
+      }
+export type RemoveLikeMutationHookResult = ReturnType<typeof useRemoveLikeMutation>;
+export type RemoveLikeMutationResult = Apollo.MutationResult<RemoveLikeMutation>;
+export type RemoveLikeMutationOptions = Apollo.BaseMutationOptions<RemoveLikeMutation, RemoveLikeMutationVariables>;
 export const GetAllLikesDocument = gql`
     query GetAllLikes {
   getAllLikes {

@@ -23,6 +23,8 @@ import {
   useGetAllLikesQuery,
   useAddLikeMutation,
   GetAllLikesDocument,
+  useRemoveLikeMutation,
+  useMeQuery,
 } from "../../../generated/graphql";
 
 interface PostProps {
@@ -31,8 +33,10 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const { data } = useGetAllLikesQuery();
+  const { data: meData } = useMeQuery();
   const likesData = data?.getAllLikes.likes.map((like: any) => like.postId);
   const [addLike] = useAddLikeMutation();
+  const [removeLike] = useRemoveLikeMutation();
 
   const { colorMode } = useColorMode();
   const linkColor = {
@@ -57,40 +61,71 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
   const toast = useToast();
 
   const handleClick = async () => {
+    if (!meData?.me?.id) {
+      router.push("/login");
+    }
     toast({
-      duration: 3000,
+      duration: 2000,
       isClosable: true,
       render: () => (
         <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
-          You clicked.
+          {likesData && likesData.includes(post)
+            ? "Removed from favs"
+            : "Added to favs"}
         </Box>
       ),
     });
-    const { errors } = await addLike({
-      variables: {
-        input: {
+    if (likesData && likesData.includes(post)) {
+      const { errors } = await removeLike({
+        variables: {
           postId: post,
-          subreddit: sub,
-          title: fetchedPost.title,
-          preview: fetchedPost.preview,
         },
-      },
-      update: (store, { data }) => {
-        const likeData: any = store.readQuery({
-          query: GetAllLikesDocument,
-        });
-        store.writeQuery({
-          query: GetAllLikesDocument,
-          data: {
-            getAllLikes: {
-              likes: [...likeData!.getAllLikes.likes, data!.addLike],
+        update: (store) => {
+          const likeData: any = store.readQuery({
+            query: GetAllLikesDocument,
+          });
+          store.writeQuery({
+            query: GetAllLikesDocument,
+            data: {
+              getAllLikes: {
+                likes: [...likeData!.getAllLikes.likes].filter(
+                  (value: any) => value.postId !== post
+                ),
+              },
             },
+          });
+        },
+      });
+      if (errors) {
+        router.push("/login");
+      }
+    } else {
+      const { errors } = await addLike({
+        variables: {
+          input: {
+            postId: post,
+            subreddit: sub,
+            title: fetchedPost.title,
+            preview: fetchedPost.preview,
           },
-        });
-      },
-    });
-    if (errors) {
-      router.push("/login");
+        },
+        update: (store) => {
+          const likeData: any = store.readQuery({
+            query: GetAllLikesDocument,
+          });
+          store.writeQuery({
+            query: GetAllLikesDocument,
+            data: {
+              getAllLikes: {
+                likes: [...likeData!.getAllLikes.likes, { postId: post }],
+              },
+            },
+          });
+        },
+      });
+      if (errors) {
+        router.push("/login");
+      }
     }
   };
 
@@ -164,3 +199,13 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
 };
 
 export default withApollo({ ssr: true })(Post);
+
+// toast({
+//   duration: 2000,
+//   isClosable: true,
+//   render: () => (
+//     <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
+//       You clicked.
+//     </Box>
+//   ),
+// });
