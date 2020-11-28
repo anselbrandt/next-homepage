@@ -253,7 +253,10 @@ export type GetAllLikesQuery = (
   ) }
 );
 
-export type LikesQueryVariables = Exact<{ [key: string]: never; }>;
+export type LikesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+}>;
 
 
 export type LikesQuery = (
@@ -527,8 +530,8 @@ export type GetAllLikesQueryHookResult = ReturnType<typeof useGetAllLikesQuery>;
 export type GetAllLikesLazyQueryHookResult = ReturnType<typeof useGetAllLikesLazyQuery>;
 export type GetAllLikesQueryResult = Apollo.QueryResult<GetAllLikesQuery, GetAllLikesQueryVariables>;
 export const LikesDocument = gql`
-    query Likes {
-  likes(limit: 25, cursor: "") {
+    query Likes($limit: Int!, $cursor: String) {
+  likes(limit: $limit, cursor: $cursor) {
     hasMore
     likes {
       createdAt
@@ -554,10 +557,12 @@ export const LikesDocument = gql`
  * @example
  * const { data, loading, error } = useLikesQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
-export function useLikesQuery(baseOptions?: Apollo.QueryHookOptions<LikesQuery, LikesQueryVariables>) {
+export function useLikesQuery(baseOptions: Apollo.QueryHookOptions<LikesQuery, LikesQueryVariables>) {
         return Apollo.useQuery<LikesQuery, LikesQueryVariables>(LikesDocument, baseOptions);
       }
 export function useLikesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LikesQuery, LikesQueryVariables>) {

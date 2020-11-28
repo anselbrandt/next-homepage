@@ -1,5 +1,5 @@
-query Likes {
-  likes(limit: 25, cursor: "") {
+query Likes($limit: Int!, $cursor: String) {
+  likes(limit: $limit, cursor: $cursor) {
     hasMore
     likes {
       createdAt
