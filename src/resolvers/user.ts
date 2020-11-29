@@ -25,8 +25,15 @@ import argon2 from "argon2";
 import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "../utils/validateRegister";
 import { getConnection } from "typeorm";
-import { COOKIE_NAME, SECRET } from "../constants";
+import {
+  COOKIE_NAME,
+  SECRET,
+  FORGOT_PASSWORD_PREFIX,
+  CLIENT_ORIGIN,
+} from "../constants";
 import * as cookieJar from "cookie-signature";
+import { sendMail } from "../utils/sendMail";
+import { v4 } from "uuid";
 
 @ObjectType()
 class Cookie {
@@ -56,6 +63,83 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver {
+  @Mutation(() => UserResponse)
+  async changePassword(
+    @Arg("token") token: string,
+    @Arg("newPassword") newPassword: string,
+    @Ctx() { redis, req }: MyContext
+  ): Promise<UserResponse> {
+    if (newPassword.length <= 2) {
+      return {
+        errors: [
+          {
+            field: "newPassword",
+            message: "length must be greater than 2",
+          },
+        ],
+      };
+    }
+    const key = FORGOT_PASSWORD_PREFIX + token;
+    const userId = await redis.get(key);
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "link expired",
+          },
+        ],
+      };
+    }
+    const userIdNum = parseInt(userId);
+    const user = await User.findOne(userIdNum);
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "user no longer exists",
+          },
+        ],
+      };
+    }
+    await User.update(
+      { id: userIdNum },
+      { password: await argon2.hash(newPassword) }
+    );
+    await redis.del(key);
+    req.session.userId = user.id;
+    const signedCookie = cookieJar.sign(req.sessionID!, SECRET);
+    const cookie = {
+      name: COOKIE_NAME,
+      value: encodeURIComponent(`s:${signedCookie}`),
+    };
+    return { user, cookie };
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(
+    @Arg("email") email: string,
+    @Ctx() { redis }: MyContext
+  ) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return true;
+    }
+    const token = v4();
+    await redis.set(
+      FORGOT_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 24
+    );
+    await sendMail(
+      email,
+      `<a href="${CLIENT_ORIGIN}/change-password/${token}">reset password</a>`
+    );
+    return true;
+  }
+
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {

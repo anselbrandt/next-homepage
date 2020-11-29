@@ -16,3 +16,8 @@ export const DATABASE_URL = process.env.DATABASE_URL;
 export const CLIENT_ORIGIN =
   process.env.CLIENT_ORIGIN || "http://localhost:3000";
 export const PORT = process.env.PORT || 4000;
+export const MAIL_CLIENTID = process.env.MAIL_CLIENTID;
+export const MAIL_SECRET = process.env.MAIL_SECRET;
+export const MAIL_REFRESHTOKEN = process.env.MAIL_REFRESHTOKEN;
+export const MAIL_USERID = process.env.MAIL_USERID;
+export const FORGOT_PASSWORD_PREFIX = "forget-password:";
