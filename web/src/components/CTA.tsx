@@ -16,7 +16,7 @@ export const CTA: React.FC<CTAProps> = ({ defaultColor }) => {
       bottom="0"
       width="100%"
       maxWidth="48rem"
-      py={2}
+      pb={2}
       backgroundColor={bgColor[colorMode]}
     >
       <ChakraLink
