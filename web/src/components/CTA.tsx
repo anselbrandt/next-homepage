@@ -1,4 +1,6 @@
 import { Link as ChakraLink, Button, useColorMode } from "@chakra-ui/core";
+import NextLink from "next/link";
+import { EMAIL, CODE_REPO } from "../../constants";
 
 import { Container } from "./Container";
 
@@ -19,32 +21,31 @@ export const CTA: React.FC<CTAProps> = ({ defaultColor }) => {
       pb={2}
       backgroundColor={bgColor[colorMode]}
     >
-      <ChakraLink
-        isExternal
-        href="https://next.chakra-ui.com/"
-        flexGrow={1}
-        mx={2}
-      >
+      <NextLink href={`mailto:${EMAIL}`} passHref>
         <Button
+          as="a"
           width="100%"
           variant="outline"
           colorScheme={defaultColor}
-          backgroundColor={bgColor[colorMode]}
+          flexGrow={1}
+          mx={2}
         >
-          chakra-ui
+          contact
         </Button>
-      </ChakraLink>
+      </NextLink>
 
-      <ChakraLink
-        isExternal
-        href="https://github.com/anselbrandt/next-express/"
-        flexGrow={3}
-        mx={2}
-      >
-        <Button width="100%" variant="solid" colorScheme={defaultColor}>
-          View Repo
+      <NextLink href={CODE_REPO} passHref>
+        <Button
+          as="a"
+          width="100%"
+          variant="solid"
+          colorScheme={defaultColor}
+          flexGrow={3}
+          mx={2}
+        >
+          view code
         </Button>
-      </ChakraLink>
+      </NextLink>
     </Container>
   );
 };
