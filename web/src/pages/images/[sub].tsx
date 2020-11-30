@@ -1,14 +1,8 @@
-import {
-  Link as ChakraLink,
-  useToast,
-  useColorMode,
-  Box,
-} from "@chakra-ui/core";
+import { useToast, useColorMode, Box } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { useRef, useEffect, useState } from "react";
 import { Container } from "../../components/Container";
-import { DarkModeSwitch } from "../../components/DarkModeSwitch";
-import { Navbar } from "../../components/Navbar";
+import Navbar from "../../components/Navbar";
 import useListingsFetch from "../../hooks/useListingsFetch";
 import { Listings } from "../../components/Listings";
 import { withApollo } from "../../utils/withApollo";
@@ -152,10 +146,7 @@ const Sub: React.FC<SubProps> = ({ defaultColor }) => {
 
   return (
     <Container minHeight="100vh" width="100vw">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
       <Listings
         fetchedListings={fetchedListings}
         isLoading={isLoading}

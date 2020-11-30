@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import {
   Box,
-  Link as ChakraLink,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -9,8 +8,7 @@ import {
   FormControl,
 } from "@chakra-ui/core";
 import { Container } from "../components/Container";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { Navbar } from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import useAutocomplete from "../hooks/useAutocomplete";
 import useListingsFetch from "../hooks/useListingsFetch";
 import { useRouter } from "next/router";
@@ -118,10 +116,8 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
 
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
+
       <Box width="100%" maxWidth="1000px">
         <Flex justifyContent="center" mb="10">
           <Box>

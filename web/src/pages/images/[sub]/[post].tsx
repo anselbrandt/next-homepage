@@ -10,8 +10,7 @@ import {
 } from "@chakra-ui/core";
 import { useRouter } from "next/router";
 import { Container } from "../../../components/Container";
-import { DarkModeSwitch } from "../../../components/DarkModeSwitch";
-import { Navbar } from "../../../components/Navbar";
+import Navbar from "../../../components/Navbar";
 import usePostFetch from "../../../hooks/usePostFetch";
 import { Markdown } from "../../../components/Markdown";
 import { useEffect } from "react";
@@ -142,10 +141,7 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
 
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
       <Box width="100%" maxW="600px">
         <Box>
           <ChakraLink href={fetchedPost.image}>
@@ -201,13 +197,3 @@ const Post: React.FC<PostProps> = ({ defaultColor }) => {
 };
 
 export default withApollo({ ssr: true })(Post);
-
-// toast({
-//   duration: 2000,
-//   isClosable: true,
-//   render: () => (
-//     <Box color={textColor[colorMode]} p={3} bg={color[colorMode]}>
-//       You clicked.
-//     </Box>
-//   ),
-// });

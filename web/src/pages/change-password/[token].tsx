@@ -4,8 +4,7 @@ import { toErrorMap } from "../../utils/toErrorMap";
 import { InputField } from "../../components/InputField";
 import { Box, Link as ChakraLink, Button } from "@chakra-ui/core";
 import { Container } from "../../components/Container";
-import { DarkModeSwitch } from "../../components/DarkModeSwitch";
-import { Navbar } from "../../components/Navbar";
+import Navbar from "../../components/Navbar";
 import { useRouter } from "next/router";
 import {
   useChangePasswordMutation,
@@ -25,10 +24,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = ({ defaultColor }) => {
   const [tokenError, setTokenError] = useState("");
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
       <Formik
         initialValues={{ newPassword: "" }}
         onSubmit={async (values, { setErrors }) => {

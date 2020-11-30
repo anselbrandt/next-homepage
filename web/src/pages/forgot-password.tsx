@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Formik, Form } from "formik";
-import { Box, Link as ChakraLink, Button } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/core";
 import { Container } from "../components/Container";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { Navbar } from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import { InputField } from "../components/InputField";
 import { useForgotPasswordMutation } from "../generated/graphql";
 import NextLink from "next/link";
@@ -18,10 +17,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ defaultColor }) => {
   const [forgotPassword] = useForgotPasswordMutation();
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values) => {

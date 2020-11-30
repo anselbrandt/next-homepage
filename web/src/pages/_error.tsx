@@ -1,7 +1,6 @@
-import { Box, Link as ChakraLink } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/core";
 import { Container } from "../components/Container";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { Navbar } from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import useFetch from "../hooks/useFetch";
 
 interface IndexProps {
@@ -13,10 +12,7 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
 
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
       <Box mt="30vh" maxW="48rem">
         {error ? "Whoops." : data}
       </Box>

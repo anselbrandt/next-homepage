@@ -1,12 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 import { Container } from "../components/Container";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { Navbar } from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import {
-  Link as ChakraLink,
   useToast,
   useColorMode,
   Box,
+  Link as ChakraLink,
 } from "@chakra-ui/core";
 import { Listings } from "../components/Listings";
 import { withApollo } from "../utils/withApollo";
@@ -175,18 +174,25 @@ const Favorites: React.FC<FavoritesProps> = ({ defaultColor }) => {
 
   return (
     <Container minHeight="100vh" width="100vw">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
-      <Listings
-        fetchedListings={fetchedListings}
-        isLoading={loading}
-        setBottom={setBottom}
-        likesData={likesData}
-        handleFav={handleFav}
-        linkPrefix={"images/"}
-      />
+      <Navbar defaultColor={defaultColor} />
+      {fetchedListings.length > 0 ? (
+        <Listings
+          fetchedListings={fetchedListings}
+          isLoading={loading}
+          setBottom={setBottom}
+          likesData={likesData}
+          handleFav={handleFav}
+          linkPrefix={"images/"}
+        />
+      ) : (
+        <Box mt="30vh">
+          Add some{" "}
+          <ChakraLink href="/images" color={color[colorMode]}>
+            favorites
+          </ChakraLink>
+          !
+        </Box>
+      )}
     </Container>
   );
 };

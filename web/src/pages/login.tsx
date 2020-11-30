@@ -1,7 +1,6 @@
-import { Box, Link as ChakraLink, Flex, Button } from "@chakra-ui/core";
+import { Box, Flex, Button } from "@chakra-ui/core";
 import { Container } from "../components/Container";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { Navbar } from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import { Formik, Form } from "formik";
 import { InputField } from "../components/InputField";
 import { useLoginMutation, MeQuery, MeDocument } from "../generated/graphql";
@@ -19,10 +18,7 @@ const Login: React.FC<LoginProps> = ({ defaultColor }) => {
   const [login] = useLoginMutation();
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
       <Formik
         initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {

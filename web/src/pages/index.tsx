@@ -12,11 +12,10 @@ import { Hero } from "../components/Hero";
 import LocalGraphql from "../components/LocalGraphql";
 import { Container } from "../components/Container";
 import { Main } from "../components/Main";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
 import { links } from "../content/links";
-import { Navbar } from "../components/Navbar";
+import Navbar from "../components/Navbar";
 
 interface IndexProps {
   defaultColor: string;
@@ -31,7 +30,6 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
 
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
       <Navbar defaultColor={defaultColor}>
         <ChakraLink href="/error" mr="2rem">
           404

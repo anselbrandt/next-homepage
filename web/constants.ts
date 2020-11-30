@@ -14,3 +14,10 @@ export const GOOGLEKEY = process.env.NEXT_PUBLIC_GOOGLEKEY;
 export const MAPBOX_ACCESS_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 export const COOKIE_NAME = process.env.NEXT_PUBLIC_COOKIE_NAME || "qid";
+
+export const pages = [
+  { path: "/error", title: "404" },
+  { path: "/about", title: "About" },
+  { path: "/images", title: "Images" },
+  { path: "/images/CabinPorn/is5fzo", title: "Test" },
+];

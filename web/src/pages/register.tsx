@@ -1,7 +1,6 @@
-import { Box, Link as ChakraLink, Button } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/core";
 import { Container } from "../components/Container";
-import { DarkModeSwitch } from "../components/DarkModeSwitch";
-import { Navbar } from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import { Formik, Form } from "formik";
 import { useRegisterMutation, MeQuery, MeDocument } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
@@ -18,10 +17,8 @@ const Register: React.FC<RegisterProps> = ({ defaultColor }) => {
   const [register] = useRegisterMutation();
   return (
     <Container minHeight="100vh">
-      <DarkModeSwitch defaultColor={defaultColor} />
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/">Home</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
+
       <Formik
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
