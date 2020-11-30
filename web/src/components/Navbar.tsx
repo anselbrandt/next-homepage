@@ -41,6 +41,11 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
   } else {
     body = (
       <>
+        <Box mr={6}>
+          <NextLink href="/favorites">
+            <Link href="/favorites">Favorites</Link>
+          </NextLink>
+        </Box>
         <Box mr={8}>
           <LogoutModal defaultColor={defaultColor} label={data.me.username} />
         </Box>
