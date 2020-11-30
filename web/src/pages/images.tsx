@@ -77,6 +77,8 @@ const Images: React.FC<ImagesProps> = ({ defaultColor }) => {
       Cookie.set("searchResult", searchTerm);
     } else {
       setDisplayedListings([]);
+      Cookie.remove("searchResult");
+      Cookie.remove("prevSearch");
     }
   }, [autocompleteList, searchTerm]);
 
