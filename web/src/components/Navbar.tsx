@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
   const [isWide] = useMediaQuery("(min-width: 700px)");
   const [isNarrow, setIsNarrow] = useState<boolean>(false);
   const { colorMode } = useColorMode();
-  const bgColor = { light: "white", dark: "#171923" };
+  const bgColor = { light: "white", dark: "gray.800" };
   const { data } = useMeQuery({
     skip: isServer(),
   });
