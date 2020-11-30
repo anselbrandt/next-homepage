@@ -30,18 +30,7 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
 
   return (
     <Container minHeight="100vh">
-      <Navbar defaultColor={defaultColor}>
-        <ChakraLink href="/error" mr="2rem">
-          404
-        </ChakraLink>
-        <ChakraLink href="/about" mr="2rem">
-          About
-        </ChakraLink>
-        <ChakraLink href="/images" mr="2rem">
-          Images
-        </ChakraLink>
-        <ChakraLink href="/images/CabinPorn/is5fzo">Test</ChakraLink>
-      </Navbar>
+      <Navbar defaultColor={defaultColor} />
       <Hero />
       <Main>
         <LocalGraphql defaultColor={defaultColor} />
