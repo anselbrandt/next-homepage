@@ -20,7 +20,7 @@ export const DarkModeSwitch: React.FC<DarkModeSwitchProps> = ({
       />
       <Switch
         colorScheme={defaultColor}
-        isChecked={colorMode === "dark" ? true : false}
+        isChecked={colorMode === "light" ? true : false}
         onChange={toggleColorMode}
       />
       <SunIcon
