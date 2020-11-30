@@ -9,6 +9,7 @@ import {
   REDIS_URL,
   DATABASE_URL,
   PORT,
+  CLIENT_ORIGIN,
 } from "./constants";
 import path from "path";
 import { createConnection } from "typeorm";
@@ -136,7 +137,7 @@ const main = async () => {
   apolloServer.installSubscriptionHandlers(httpServer);
 
   httpServer.listen(PORT, () => {
-    console.log(`server started on localhost:${PORT}`);
+    console.log(`server started on ${CLIENT_ORIGIN}`);
   });
 };
 
