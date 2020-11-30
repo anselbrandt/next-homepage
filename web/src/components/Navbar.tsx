@@ -1,5 +1,5 @@
-import React from "react";
-import { Link, Flex, useColorMode, Box } from "@chakra-ui/core";
+import React, { useEffect, useState } from "react";
+import { Link, Flex, useColorMode, Box, useMediaQuery } from "@chakra-ui/core";
 import NextLink from "next/link";
 import { useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
@@ -15,6 +15,8 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
+  const [isWide] = useMediaQuery("(min-width: 700px)");
+  const [isNarrow, setIsNarrow] = useState<boolean>(false);
   const { colorMode } = useColorMode();
   const bgColor = { light: "white", dark: "#171923" };
   const { data } = useMeQuery({
@@ -45,6 +47,11 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
       </>
     );
   }
+
+  useEffect(() => {
+    setIsNarrow(!isWide);
+  }, [isWide]);
+
   return (
     <Flex
       direction="row"
@@ -63,7 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
         alignItems="center"
         ml="auto"
         mr={2}
-        display={["none", "flex", "flex", "flex"]}
+        display={isNarrow ? "none" : "flex"}
       >
         {pages.map((page, index) => (
           <NextLink key={index} href={page.path}>
@@ -80,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
         alignItems="center"
         ml="auto"
         mr={2}
-        display={["flex", "none", "none", "none"]}
+        display={isNarrow ? "flex" : "none"}
       >
         <MenuDrawer defaultColor={defaultColor}>
           <Box mt={6}>
@@ -118,4 +125,4 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
   );
 };
 
-export default withApollo({ ssr: true })(Navbar);
+export default withApollo({ ssr: false })(Navbar);
