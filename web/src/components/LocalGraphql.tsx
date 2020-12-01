@@ -24,7 +24,7 @@ const LocalGraphql: React.FC<LocalGraphqlProps> = ({ defaultColor, props }) => {
     dark: `${defaultColor}.200`,
   };
 
-  const { data: qdata, loading, error } = useServerStatusQuery();
+  const { data: qdata } = useServerStatusQuery();
   const { data: subdata } = useQueryNotificationSubscription();
 
   const [notification, setNotification] = useState<Notification | undefined>();
@@ -47,22 +47,21 @@ const LocalGraphql: React.FC<LocalGraphqlProps> = ({ defaultColor, props }) => {
         p="1.75rem"
         {...props}
       >
-        <Box w={400} my="2rem" ml="6rem">
-          <Box>
-            {loading || error ? (
-              <Box>
-                Waking server
-                <Ellipsis />
-              </Box>
-            ) : null}
+        {qdata ? (
+          <Box textAlign="center" my="2rem">
+            {qdata.hello.status}
           </Box>
-          {qdata ? <Box>{qdata.hello.status}</Box> : null}
-          {notification ? (
-            <Box>
-              {notification.message} at {notification.time}
-            </Box>
-          ) : null}
-        </Box>
+        ) : (
+          <Box>
+            Waking server
+            <Ellipsis />
+          </Box>
+        )}
+        {notification ? (
+          <Box textAlign="center" mb="2rem">
+            {notification.message} at {notification.time}
+          </Box>
+        ) : null}
       </Box>
     </Box>
   );
