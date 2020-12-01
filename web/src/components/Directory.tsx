@@ -4,7 +4,7 @@ import { allsubs } from "../subs";
 
 export const Directory = () => {
   return (
-    <SimpleGrid mx="8" minChildWidth="180px">
+    <SimpleGrid mx="8" minChildWidth="150px">
       {allsubs.map((value, index) => (
         <Box key={index}>
           <Heading>{value.category}</Heading>
