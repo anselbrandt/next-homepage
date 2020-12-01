@@ -1,4 +1,4 @@
-import { Box, useColorMode, BoxProps, Icon, IconProps } from "@chakra-ui/core";
+import { Box, useColorMode, BoxProps } from "@chakra-ui/core";
 import { withApollo } from "../utils/withApollo";
 import {
   useServerStatusQuery,

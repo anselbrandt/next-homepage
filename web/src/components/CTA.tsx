@@ -1,4 +1,4 @@
-import { Link as ChakraLink, Button, useColorMode } from "@chakra-ui/core";
+import { Button, useColorMode } from "@chakra-ui/core";
 import NextLink from "next/link";
 import { EMAIL, CODE_REPO } from "../../constants";
 
