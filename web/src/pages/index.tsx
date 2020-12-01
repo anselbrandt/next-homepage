@@ -7,7 +7,7 @@ import {
   ListItem,
   useColorMode,
 } from "@chakra-ui/core";
-import { CheckCircleIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 import { Hero } from "../components/Hero";
 import LocalGraphql from "../components/LocalGraphql";
 import { Container } from "../components/Container";
@@ -33,25 +33,24 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
       <Navbar defaultColor={defaultColor} />
       <Hero />
       <Main>
-        <LocalGraphql defaultColor={defaultColor} />
-      </Main>
-      <Footer>
         <Text>
-          Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{" "}
-          <Code>graphql</Code> running on an <Code>Express</Code> +{" "}
-          <Code>Apollo Server</Code> backend, all written in{" "}
-          <Code>typescript</Code>
+          Building the future with <Code>React</Code> + <Code>Node.js</Code> +{" "}
+          <Code>TypeScript</Code>
         </Text>
-        <List spacing={3} my={0}>
+
+        <List spacing={3} my={0} mt={4}>
           {links.map((link, index) => (
             <ListItem key={index}>
               <ListIcon as={CheckCircleIcon} color={themeColor[colorMode]} />
-              <ChakraLink isExternal href={link.path} flexGrow={1} mr={2}>
-                {link.name} <ExternalLinkIcon />
+              <ChakraLink href={link.path} flexGrow={1} mr={2}>
+                {link.name}
               </ChakraLink>
             </ListItem>
           ))}
         </List>
+      </Main>
+      <Footer>
+        <LocalGraphql defaultColor={defaultColor} />
       </Footer>
       <CTA defaultColor={defaultColor} />
     </Container>
