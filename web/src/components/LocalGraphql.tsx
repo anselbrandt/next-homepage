@@ -1,10 +1,11 @@
-import { Box, useColorMode, BoxProps } from "@chakra-ui/core";
+import { Box, useColorMode, BoxProps, Icon, IconProps } from "@chakra-ui/core";
 import { withApollo } from "../utils/withApollo";
 import {
   useServerStatusQuery,
   useQueryNotificationSubscription,
 } from "../generated/graphql";
 import { useEffect, useState } from "react";
+import { Ellipsis } from "../animation/Ellipsis";
 
 interface Notification {
   message: string;
@@ -23,7 +24,7 @@ const LocalGraphql: React.FC<LocalGraphqlProps> = ({ defaultColor, props }) => {
     dark: `${defaultColor}.200`,
   };
 
-  const { data: qdata } = useServerStatusQuery();
+  const { data: qdata, loading, error } = useServerStatusQuery();
   const { data: subdata } = useQueryNotificationSubscription();
 
   const [notification, setNotification] = useState<Notification | undefined>();
@@ -39,7 +40,6 @@ const LocalGraphql: React.FC<LocalGraphqlProps> = ({ defaultColor, props }) => {
 
   return (
     <Box>
-      <Box>From GraphQL:</Box>
       <Box
         border="1px solid"
         borderColor={themeColor[colorMode]}
@@ -47,17 +47,22 @@ const LocalGraphql: React.FC<LocalGraphqlProps> = ({ defaultColor, props }) => {
         p="1.75rem"
         {...props}
       >
-        <Box mb="1rem">Status:</Box>
-        {qdata ? (
-          <Box textAlign="center" mb="2rem">
-            {qdata.hello.status}
+        <Box w={400} my="2rem" ml="6rem">
+          <Box>
+            {loading || error ? (
+              <Box>
+                Waking server
+                <Ellipsis />
+              </Box>
+            ) : null}
           </Box>
-        ) : null}
-        {notification ? (
-          <Box textAlign="center" mb="2rem">
-            {notification.message} at {notification.time}
-          </Box>
-        ) : null}
+          {qdata ? <Box>{qdata.hello.status}</Box> : null}
+          {notification ? (
+            <Box>
+              {notification.message} at {notification.time}
+            </Box>
+          ) : null}
+        </Box>
       </Box>
     </Box>
   );
