@@ -20,8 +20,8 @@ export const EMAIL = "ansel@anselbrandt.com";
 export const CODE_REPO = "https://github.com/anselbrandt/next-homepage";
 
 export const pages = [
-  { path: "/error", title: "404" },
+  { path: "/images", title: "Reddit Gallery" },
+  { path: "/map", title: "Montreal Real Estate" },
+  { path: "/dashboard", title: "IoT Dashboard" },
   { path: "/about", title: "About" },
-  { path: "/images", title: "Images" },
-  { path: "/images/CabinPorn/is5fzo", title: "Test" },
 ];

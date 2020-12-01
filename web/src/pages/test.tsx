@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/core";
-import { Layout } from "../components/Layout";
+import { Container } from "../components/Container";
+import Navbar from "../components/Navbar";
 
 interface TestProps {
   defaultColor: string;
@@ -7,11 +8,12 @@ interface TestProps {
 
 const Test: React.FC<TestProps> = ({ defaultColor }) => {
   return (
-    <Layout defaultColor={defaultColor}>
+    <Container>
+      <Navbar defaultColor={defaultColor} />
       <Box mt="30vh" maxW="48rem">
         <Box>Test Page</Box>
       </Box>
-    </Layout>
+    </Container>
   );
 };
 

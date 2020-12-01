@@ -15,7 +15,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
-  const [isWide] = useMediaQuery("(min-width: 700px)");
+  const [isWide] = useMediaQuery("(min-width: 1080px)");
   const [isNarrow, setIsNarrow] = useState<boolean>(false);
   const { colorMode } = useColorMode();
   const bgColor = { light: "white", dark: "gray.800" };
@@ -41,11 +41,6 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
   } else {
     body = (
       <>
-        <Box mr={6}>
-          <NextLink href="/favorites">
-            <Link href="/favorites">Favorites</Link>
-          </NextLink>
-        </Box>
         <Box mr={8}>
           <LogoutModal defaultColor={defaultColor} label={data.me.username} />
         </Box>
@@ -95,11 +90,6 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
         display={isNarrow ? "flex" : "none"}
       >
         <MenuDrawer defaultColor={defaultColor}>
-          <Box mt={6}>
-            <NextLink href="/">
-              <Link href="/">Home</Link>
-            </NextLink>
-          </Box>
           {pages.map((page, index) => (
             <Box key={index} mt={6}>
               <NextLink href={page.path}>
