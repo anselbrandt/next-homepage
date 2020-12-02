@@ -102,12 +102,13 @@ const Grid: React.FC<GridProps> = ({
     } catch (error) {
       mathFunc = () => "error";
     }
-    const result = mathFunc(1, 1, 1, 1);
+    let result = mathFunc(1, 1, 1, 1);
     if (!isNaN(result)) {
       currentFunc.current = mathFunc;
       setTime(0);
     }
     mathFunc = null;
+    result = null;
   }, [input]);
 
   useEffect(() => {
