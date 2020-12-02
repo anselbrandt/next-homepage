@@ -115,11 +115,10 @@ const Grid: React.FC<GridProps> = ({
     canvas!.width = width;
     canvas!.height = height;
     const context = canvas!.getContext("2d");
+    context!.fillStyle = bgColor[colorMode];
+    context!.fillRect(0, 0, width, height);
 
     const render = () => {
-      context!.fillStyle = bgColor[colorMode];
-      context!.fillRect(0, 0, width, height);
-
       pixels.forEach((pixel, index) => {
         const canvasX = pixel.canvasX;
         const canvasY = pixel.canvasY;
@@ -135,7 +134,7 @@ const Grid: React.FC<GridProps> = ({
         circle.arc(canvasX, canvasY, radius, 0, 2 * Math.PI);
         context!.fillStyle = value > 0 ? dotColor[colorMode] : "tomato";
         context!.fill(circle);
-      });
+      }, []);
 
       renderFrame.current = requestAnimationFrame(render);
     };
