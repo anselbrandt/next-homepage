@@ -22,7 +22,7 @@ export const MapInfo: React.FC<MapInfoProps> = ({ viewState }) => {
     <Box
       position="absolute"
       zIndex="10"
-      top="15px"
+      top="32px"
       ml="auto"
       mr="auto"
       left="0"
@@ -31,6 +31,7 @@ export const MapInfo: React.FC<MapInfoProps> = ({ viewState }) => {
       color={color[colorMode]}
       p={1}
       fontSize="sm"
+      pointerEvents="none"
     >
       {`${viewState.latitude.toFixed(3)}, ${viewState.longitude.toFixed(
         3
