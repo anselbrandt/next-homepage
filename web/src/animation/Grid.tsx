@@ -17,7 +17,7 @@ const Grid: React.FC<GridProps> = ({
   defaultColor,
 }) => {
   const { colorMode } = useColorMode();
-  const dotColor = {
+  const dotColor: DotColor = {
     light: colors[defaultColor][500],
     dark: colors[defaultColor][200],
   };
@@ -25,19 +25,19 @@ const Grid: React.FC<GridProps> = ({
     light: "white",
     dark: colors["gray"][800],
   };
-  const frame = useRef<number | undefined>();
-  const [time, setTime] = useState<number>(0);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [input, setInput] = useState<string | undefined>(
-    "hypot(x-=t%4*5,y-=8)<6&&x<y|y<-x"
-  );
-  const [currFunc, setCurrFunc] = useState<string | undefined>(
-    "hypot(x-=t%4*5,y-=8)<6&&x<y|y<-x"
-  );
+
   const [example, setExample] = useState<number>(1);
 
+  const timerFrame = useRef<number | undefined>();
+  const renderFrame = useRef<number | undefined>();
+  const [time, setTime] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const currentFunc = useRef<Function | undefined>();
+  const [input, setInput] = useState<string>(
+    `hypot(x-=t%4*5,y-=8)<6&&x<y|y<-x`
+  );
+
   const handleClick = () => {
-    // setIsPaused((prev) => !prev);
     setTime(0);
     setInput(examples[example]);
     setExample((prev) => (prev === examples.length - 1 ? 0 : prev + 1));
@@ -65,14 +65,57 @@ const Grid: React.FC<GridProps> = ({
         canvasY: yScale * (row + offset),
       };
     });
+
+  useEffect(() => {
+    const render = () => {
+      timerFrame.current = requestAnimationFrame(render);
+      if (!isPaused) {
+        setTime((prev: number) => {
+          return prev + incr;
+        });
+      }
+    };
+    timerFrame.current = requestAnimationFrame(render);
+    return () => cancelAnimationFrame(timerFrame.current as number);
+  }, [isPaused]);
+
+  useEffect(() => {
+    let mathFunc;
+    try {
+      mathFunc = new Function(
+        "t",
+        "i",
+        "x",
+        "y",
+        `try {
+            with (Math) {
+                return ${input!.replace(/\\/g, ";")};
+              }
+      } catch (error) {
+        return 'error';
+      }`
+      );
+    } catch (error) {
+      mathFunc = () => "error";
+    }
+    const result = mathFunc(1, 1, 1, 1);
+    if (!isNaN(result)) {
+      currentFunc.current = mathFunc;
+      setTime(0);
+    }
+    mathFunc = null;
+  }, [input]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     canvas!.width = width;
     canvas!.height = height;
     const context = canvas!.getContext("2d");
-    const draw = () => {
+
+    const render = () => {
       context!.fillStyle = bgColor[colorMode];
       context!.fillRect(0, 0, width, height);
+
       pixels.forEach((pixel, index) => {
         const canvasX = pixel.canvasX;
         const canvasY = pixel.canvasY;
@@ -80,71 +123,21 @@ const Grid: React.FC<GridProps> = ({
         const i = index;
         const x = pixel.x;
         const y = pixel.y;
-        let getValue;
-        try {
-          getValue = new Function(
-            "t",
-            "i",
-            "x",
-            "y",
-            `try {
-                with (Math) {
-                    return ${input!.replace(/\\/g, ";")};
-                  }
-          } catch (error) {
-            with (Math) {
-                return 0;
-              }
-          }`
-          );
-        } catch (error) {
-          getValue = new Function(
-            "t",
-            "i",
-            "x",
-            "y",
-            `with (Math) {
-            return 0;
-          }`
-          );
-        }
-        if (typeof getValue !== "number") {
-          setCurrFunc(input);
-        }
+
         const clamp = (num: number) => (num <= -1 ? -1 : num >= 1 ? 1 : num);
-        const value = clamp(getValue(t, i, x, y));
+        const value = clamp(currentFunc.current!(t, i, x, y));
         const radius = Math.abs(maxRadius * value);
         const circle = new Path2D();
         circle.arc(canvasX, canvasY, radius, 0, 2 * Math.PI);
         context!.fillStyle = value > 0 ? dotColor[colorMode] : "tomato";
         context!.fill(circle);
       });
-      frame.current = requestAnimationFrame(draw);
-      if (!isPaused) {
-        setTime((prev: number) => {
-          return prev + incr;
-        });
-      }
+
+      renderFrame.current = requestAnimationFrame(render);
     };
-    frame.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(frame.current as number);
-  }, [
-    canvasRef,
-    width,
-    height,
-    gridSize,
-    pixels,
-    maxRadius,
-    time,
-    isPaused,
-    input,
-  ]);
-
-  useEffect(() => {
-    setTime(0);
-    setIsPaused(false);
-  }, [currFunc]);
-
+    renderFrame.current = requestAnimationFrame(render);
+    return () => cancelAnimationFrame(renderFrame.current as number);
+  });
   return (
     <Box>
       <Flex direction="column" alignItems="center">
