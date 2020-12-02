@@ -42,7 +42,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     setViewState((prev: any) => {
       return {
         ...prev,
-        bearing: prev.bearing !== 0 ? 0 : -57.5,
+        bearing: prev.bearing !== 0 ? 0 : -57.2,
         transitionDuration: 500,
       };
     });

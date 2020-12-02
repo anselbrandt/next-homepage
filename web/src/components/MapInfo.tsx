@@ -22,7 +22,7 @@ export const MapInfo: React.FC<MapInfoProps> = ({ viewState }) => {
     <Box
       position="absolute"
       zIndex="10"
-      top="52px"
+      top="15px"
       ml="auto"
       mr="auto"
       left="0"
