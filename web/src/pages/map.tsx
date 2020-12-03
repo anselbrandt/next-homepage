@@ -116,8 +116,8 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
       getIcon: () => "marker",
       sizeScale: 15,
       getPosition: (d: any) => d.coordinates,
-      getSize: (d: any) => 6,
-      getColor: (d: any) => [255, 99, 71],
+      getSize: () => 6,
+      getColor: () => [255, 99, 71],
     }),
   ];
 
