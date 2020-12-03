@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import MapboxClient from "mapbox";
 import { WebMercatorViewport } from "viewport-mercator-project";
+import { Box, Input, useColorMode } from "@chakra-ui/core";
 
 interface GeocoderProps {
   timeout?: number;
@@ -13,9 +14,6 @@ interface GeocoderProps {
   pointZoom?: number;
   mapboxApiAccessToken: string;
   formatItem?: (...args: any) => any;
-  className?: string;
-  inputComponent?: (...args: any) => any;
-  itemComponent?: (...args: any) => any;
   limit?: number;
   localGeocoder?: (...args: any) => any;
   localOnly?: boolean;
@@ -33,19 +31,19 @@ const Geocoder: React.FC<GeocoderProps> = ({
   pointZoom,
   mapboxApiAccessToken,
   formatItem,
-  className,
-  inputComponent,
-  itemComponent,
   limit,
   localGeocoder,
   localOnly,
   updateInputOnSelect,
   initialInputValue,
 }) => {
+  const { colorMode } = useColorMode();
+  const color = { light: "black", dark: "white" };
+  const bgColor = { light: "white", dark: "gray.800" };
+  const hoverColor = { light: "gray.200", dark: "gray.600" };
+
   const debounceRef = useRef<number | undefined>();
   const client = new MapboxClient(mapboxApiAccessToken);
-  const Input: any = inputComponent || "input";
-  const Item: any = itemComponent || "div";
 
   const [results, setResults] = useState<any[]>([]);
   const [showResults, setShowResults] = useState(false);
@@ -117,7 +115,7 @@ const Geocoder: React.FC<GeocoderProps> = ({
   }, [inputValue, initialInputValue]);
 
   return (
-    <div className={`react-geocoder ${className}`}>
+    <Box bgColor={bgColor[colorMode]} color={color[colorMode]}>
       <Input
         onChange={handleOnChange}
         onBlur={handleHideResults}
@@ -127,20 +125,23 @@ const Geocoder: React.FC<GeocoderProps> = ({
       />
 
       {showResults && !!results.length && (
-        <div className="react-geocoder-results">
+        <Box m={4}>
           {results.map((item, index) => (
-            <Item
+            <Box
               key={index}
-              className="react-geocoder-item"
               onClick={() => handleOnSelected(item)}
               item={item}
+              _hover={{
+                bgColor: hoverColor[colorMode],
+                cursor: "pointer",
+              }}
             >
               {formatItem!(item)}
-            </Item>
+            </Box>
           ))}
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
@@ -154,9 +155,6 @@ Geocoder.propTypes = {
   pointZoom: PropTypes.number,
   mapboxApiAccessToken: PropTypes.string.isRequired,
   formatItem: PropTypes.func,
-  className: PropTypes.string,
-  inputComponent: PropTypes.func,
-  itemComponent: PropTypes.func,
   limit: PropTypes.number,
   localGeocoder: PropTypes.func,
   localOnly: PropTypes.bool,
@@ -172,7 +170,6 @@ Geocoder.defaultProps = {
   pointZoom: 16,
   formatItem: (item) => item.place_name,
   queryParams: {},
-  className: "",
   limit: 5,
   initialInputValue: "",
 };
