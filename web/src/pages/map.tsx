@@ -4,6 +4,7 @@ import { withApollo } from "../utils/withApollo";
 import { StaticMap, FlyToInterpolator } from "react-map-gl";
 import { DeckGL } from "@deck.gl/react";
 import { MVTLayer } from "@deck.gl/geo-layers";
+import { IconLayer } from "@deck.gl/layers";
 import { MAPBOX_ACCESS_TOKEN, initialViewState } from "../utils/mapUtils";
 import Navbar from "../components/Navbar";
 import { MapControls } from "../components/MapControls";
@@ -11,6 +12,10 @@ import { MapInfo } from "../components/MapInfo";
 import { useGetBins } from "../hooks/useGetBins";
 import { getRgb } from "../utils/getColor";
 import Geocoder from "../components/Geocoder";
+
+const ICON_MAPPING = {
+  marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
+};
 
 const params = {
   country: "ca",
@@ -32,12 +37,17 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({ defaultColor }) => {
   const { colorMode } = useColorMode();
+
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
   const handleChangeViewState = ({ viewState }: any) => setViewState(viewState);
   const mapStyle = {
     light: "mapbox://styles/mapbox/light-v10",
     dark: "mapbox://styles/mapbox/dark-v10",
   };
+  const [searchResult, setSearchResult] = useState<{ coordinates: any[] }[]>(
+    []
+  );
+
   const handleFlyTo = () => {
     setViewState({
       ...viewState,
@@ -57,7 +67,22 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
   };
 
   const handleSelect = (value: any) => {
-    setViewState(value);
+    setViewState({
+      ...viewState,
+      ...value,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
+    });
+    const selected = [
+      {
+        coordinates: [value.longitude, value.latitude],
+      },
+    ];
+    setSearchResult(selected);
+  };
+
+  const handleClearSearch = () => {
+    setSearchResult([]);
   };
 
   const target = 500000;
@@ -79,6 +104,21 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         getFillColor: { bins },
       },
     } as any),
+    new IconLayer({
+      id: "icon-layer",
+      data: searchResult,
+      pickable: true,
+      // iconAtlas and iconMapping are required
+      // getIcon: return a string
+      iconAtlas:
+        "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png",
+      iconMapping: ICON_MAPPING,
+      getIcon: () => "marker",
+      sizeScale: 15,
+      getPosition: (d: any) => d.coordinates,
+      getSize: (d: any) => 6,
+      getColor: (d: any) => [255, 99, 71],
+    }),
   ];
 
   return (
@@ -101,6 +141,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         <Geocoder
           mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN!}
           onSelected={handleSelect}
+          onClearSearch={handleClearSearch}
           viewport={viewState}
           hideOnSelect={true}
           initialInputValue=""

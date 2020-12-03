@@ -9,6 +9,7 @@ interface GeocoderProps {
   queryParams?: object;
   viewport: {};
   onSelected: (...args: any) => any;
+  onClearSearch?: (...args: any) => any;
   transitionDuration?: number;
   hideOnSelect?: boolean;
   pointZoom?: number;
@@ -26,6 +27,7 @@ const Geocoder: React.FC<GeocoderProps> = ({
   queryParams,
   viewport,
   onSelected,
+  onClearSearch,
   transitionDuration,
   hideOnSelect,
   pointZoom,
@@ -52,6 +54,9 @@ const Geocoder: React.FC<GeocoderProps> = ({
   const handleOnChange = (event: any) => {
     const queryString = event.target.value;
     setInputValue(queryString);
+    if (queryString === "" && onClearSearch) {
+      onClearSearch();
+    }
 
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
@@ -150,6 +155,7 @@ Geocoder.propTypes = {
   queryParams: PropTypes.object,
   viewport: PropTypes.object.isRequired,
   onSelected: PropTypes.func.isRequired,
+  onClearSearch: PropTypes.func,
   transitionDuration: PropTypes.number,
   hideOnSelect: PropTypes.bool,
   pointZoom: PropTypes.number,
