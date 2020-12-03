@@ -101,3 +101,14 @@ export const colorNames = [
   "royalblue",
   "navy",
 ];
+
+export const colorsArr = [
+  "rgb(62, 9, 6)",
+  "rgb(154, 38, 30)",
+  "rgb(239, 108, 51)",
+  "rgb(215, 215, 1)",
+  "rgb(0, 220, 203)",
+  "rgb(0, 165, 210)",
+  "rgb(26, 79, 129)",
+  "rgb(0, 39, 54)",
+];

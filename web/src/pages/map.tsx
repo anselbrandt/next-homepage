@@ -12,6 +12,7 @@ import { MapInfo } from "../components/MapInfo";
 import { useGetBins } from "../hooks/useGetBins";
 import { getRgb } from "../utils/getColor";
 import Geocoder from "../components/Geocoder";
+import { MapLegend } from "../components/MapLegend";
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
@@ -155,6 +156,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         handleFlyTo={handleFlyTo}
         handleOrient={handleOrient}
       />
+      <MapLegend defaultColor={defaultColor} bins={bins} range={range} />
     </Box>
   );
 };
