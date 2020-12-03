@@ -10,6 +10,11 @@ import { MapControls } from "../components/MapControls";
 import { MapInfo } from "../components/MapInfo";
 import { useGetBins } from "../hooks/useGetBins";
 import { getRgb } from "../utils/getColor";
+import Geocoder from "../components/Geocoder";
+
+const params = {
+  country: "ca",
+};
 
 interface ViewState {
   longitude: number;
@@ -51,6 +56,10 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     });
   };
 
+  const handleSelect = (value: any) => {
+    setViewState(value);
+  };
+
   const target = 500000;
   const range: [number, number, number] = [0.05, 0.15, 0.3];
   const { bins } = useGetBins({ target: target, range: range });
@@ -88,6 +97,17 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
           height={"100vh"}
         />
       </DeckGL>
+      <Box style={{ zIndex: 10, position: "absolute", top: 60, left: 5 }}>
+        <Geocoder
+          mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN!}
+          onSelected={handleSelect}
+          viewport={viewState}
+          hideOnSelect={true}
+          initialInputValue=""
+          queryParams={params}
+          updateInputOnSelect={true}
+        />
+      </Box>
       <MapInfo viewState={viewState} />
       <MapControls
         defaultColor={defaultColor}
