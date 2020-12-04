@@ -7,12 +7,14 @@ interface MapLegendProps {
   defaultColor: string;
   bins: number[];
   range: number[];
+  handleOpen: () => void;
 }
 
 export const MapLegend: React.FC<MapLegendProps> = ({
   defaultColor,
   bins,
   range,
+  handleOpen,
 }) => {
   const { colorMode } = useColorMode();
   const bgColor = { light: "white", dark: "gray.800" };
@@ -82,6 +84,7 @@ export const MapLegend: React.FC<MapLegendProps> = ({
             colorScheme={defaultColor}
             aria-label="Edit price"
             icon={<EditIcon />}
+            onClick={handleOpen}
           />
         </GridItem>
         {range.sort().map((value, index) => (

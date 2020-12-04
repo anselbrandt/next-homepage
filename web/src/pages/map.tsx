@@ -12,7 +12,10 @@ import {
   useDisclosure,
   Button,
   Link as ChakraLink,
+  Image,
+  Stack,
 } from "@chakra-ui/core";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { withApollo } from "../utils/withApollo";
 import { StaticMap, FlyToInterpolator } from "react-map-gl";
 import { DeckGL } from "@deck.gl/react";
@@ -26,6 +29,7 @@ import { useGetBins } from "../hooks/useGetBins";
 import { getRgb } from "../utils/getColor";
 import Geocoder from "../components/Geocoder";
 import { MapLegend } from "../components/MapLegend";
+import { GOOGLEKEY } from "../../constants";
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
@@ -51,8 +55,19 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({ defaultColor }) => {
   const { colorMode } = useColorMode();
+  const linkColor = {
+    light: `${defaultColor}.500`,
+    dark: `${defaultColor}.200`,
+  };
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalInfo, setModalInfo] = useState<any | undefined>();
+  const [lastPicked, setLastPicked] = useState<number[]>([]);
+
+  const {
+    isOpen: isFilterOpen,
+    onOpen: onFilterOpen,
+    onClose: onFilterClose,
+  } = useDisclosure();
 
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
   const handleChangeViewState = ({ viewState }: any) => setViewState(viewState);
@@ -86,7 +101,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     setViewState({
       ...viewState,
       ...value,
-      transitionDuration: 2000,
+      transitionDuration: 1000,
       transitionInterpolator: new FlyToInterpolator(),
     });
     const selected = [
@@ -120,7 +135,10 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
       pickable: true,
       autoHighlight: true,
       uniqueIdProperty: "id",
-      onClick: (info: any) => handleModal(info.object.properties),
+      onClick: (info: any) => {
+        setLastPicked(info.coordinate);
+        handleModal(info.object.properties);
+      },
       updateTriggers: {
         getFillColor: { bins },
       },
@@ -176,7 +194,12 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         handleFlyTo={handleFlyTo}
         handleOrient={handleOrient}
       />
-      <MapLegend defaultColor={defaultColor} bins={bins} range={range} />
+      <MapLegend
+        defaultColor={defaultColor}
+        bins={bins}
+        range={range}
+        handleOpen={onFilterOpen}
+      />
       {modalInfo && (
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />
@@ -184,46 +207,79 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
             <ModalHeader>{modalInfo.address}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Box>Registration: {modalInfo.id}</Box>
-              <Box> ${modalInfo.price.toLocaleString("en-US")}</Box>
-              <Box>
-                {" "}
-                {(+(modalInfo.area * 10.7639104167).toFixed(0)).toLocaleString(
-                  "en-US"
-                )}{" "}
-                sf
-              </Box>
-              <Box> {`$${modalInfo.psqft.toLocaleString("en-US")} /sf`}</Box>
               <Box>
                 <ChakraLink
+                  isExternal
                   href={`https://maps.google.com/maps?q=${modalInfo.address.replace(
                     / /g,
                     "+"
                   )}+Montreal`}
                 >
-                  Google Streetview
+                  <Image
+                    src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${lastPicked[1]},${lastPicked[0]}&fov=80&heading=70&pitch=0&key=${GOOGLEKEY}`}
+                  />
                 </ChakraLink>
               </Box>
-              <Box>
-                <ChakraLink
-                  href={
-                    "https://servicesenligne2.ville.montreal.qc.ca/sel/evalweb/index"
-                  }
-                >
-                  Property Tax Records
-                </ChakraLink>
-              </Box>
+              <Stack mt={10} spacing={2}>
+                <Box>Registration: {modalInfo.id}</Box>
+                <Box>
+                  Last assessment: ${modalInfo.price.toLocaleString("en-US")}
+                </Box>
+                <Box>
+                  Area:{" "}
+                  {(+(modalInfo.area * 10.7639104167).toFixed(
+                    0
+                  )).toLocaleString("en-US")}{" "}
+                  sf
+                </Box>
+                <Box>
+                  Price per sf: {`$${modalInfo.psqft.toLocaleString("en-US")}`}
+                </Box>
+                <Box color={linkColor[colorMode]}>
+                  <ChakraLink
+                    isExternal
+                    href={`https://maps.google.com/maps?q=${modalInfo.address.replace(
+                      / /g,
+                      "+"
+                    )}+Montreal`}
+                  >
+                    Google Streetview <ExternalLinkIcon mx="2px" />
+                  </ChakraLink>
+                </Box>
+                <Box color={linkColor[colorMode]}>
+                  <ChakraLink
+                    isExternal
+                    href={
+                      "https://servicesenligne2.ville.montreal.qc.ca/sel/evalweb/index"
+                    }
+                  >
+                    Property Tax Records <ExternalLinkIcon mx="2px" />
+                  </ChakraLink>
+                </Box>
+              </Stack>
             </ModalBody>
 
             <ModalFooter>
               <Button colorScheme={defaultColor} mr={3} onClick={onClose}>
                 Close
               </Button>
-              <Button variant="ghost">Add to List</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
       )}
+      <Modal isOpen={isFilterOpen} onClose={onFilterClose} isCentered>
+        <ModalContent>
+          <ModalHeader>Filter Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Filter Body</ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme={defaultColor} mr={3} onClick={onFilterClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
