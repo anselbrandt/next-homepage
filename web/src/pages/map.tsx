@@ -1,5 +1,18 @@
 import React, { useState } from "react";
-import { Box, useColorMode } from "@chakra-ui/core";
+import {
+  Box,
+  useColorMode,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Button,
+  Link as ChakraLink,
+} from "@chakra-ui/core";
 import { withApollo } from "../utils/withApollo";
 import { StaticMap, FlyToInterpolator } from "react-map-gl";
 import { DeckGL } from "@deck.gl/react";
@@ -38,6 +51,8 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({ defaultColor }) => {
   const { colorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [modalInfo, setModalInfo] = useState<any | undefined>();
 
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
   const handleChangeViewState = ({ viewState }: any) => setViewState(viewState);
@@ -86,6 +101,11 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     setSearchResult([]);
   };
 
+  const handleModal = (info: any) => {
+    setModalInfo(info);
+    onOpen();
+  };
+
   const target = 500000;
   const range: [number, number, number] = [0.05, 0.15, 0.3];
   const { bins } = useGetBins({ target: target, range: range });
@@ -100,7 +120,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
       pickable: true,
       autoHighlight: true,
       uniqueIdProperty: "id",
-      onClick: (info: any) => console.log(info.object.properties),
+      onClick: (info: any) => handleModal(info.object.properties),
       updateTriggers: {
         getFillColor: { bins },
       },
@@ -157,6 +177,53 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         handleOrient={handleOrient}
       />
       <MapLegend defaultColor={defaultColor} bins={bins} range={range} />
+      {modalInfo && (
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{modalInfo.address}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Box>Registration: {modalInfo.id}</Box>
+              <Box> ${modalInfo.price.toLocaleString("en-US")}</Box>
+              <Box>
+                {" "}
+                {(+(modalInfo.area * 10.7639104167).toFixed(0)).toLocaleString(
+                  "en-US"
+                )}{" "}
+                sf
+              </Box>
+              <Box> {`$${modalInfo.psqft.toLocaleString("en-US")} /sf`}</Box>
+              <Box>
+                <ChakraLink
+                  href={`https://maps.google.com/maps?q=${modalInfo.address.replace(
+                    / /g,
+                    "+"
+                  )}+Montreal`}
+                >
+                  Google Streetview
+                </ChakraLink>
+              </Box>
+              <Box>
+                <ChakraLink
+                  href={
+                    "https://servicesenligne2.ville.montreal.qc.ca/sel/evalweb/index"
+                  }
+                >
+                  Property Tax Records
+                </ChakraLink>
+              </Box>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme={defaultColor} mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button variant="ghost">Add to List</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
     </Box>
   );
 };
