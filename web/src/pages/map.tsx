@@ -217,7 +217,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
                   )}+Montreal`}
                 >
                   <Image
-                    src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${lastPicked[1]},${lastPicked[0]}&fov=80&heading=70&pitch=0&key=${GOOGLEKEY}`}
+                    src={`https://maps.googleapis.com/maps/api/streetview?size=400x400&location=${lastPicked[1]},${lastPicked[0]}&key=${GOOGLEKEY}`}
                   />
                 </ChakraLink>
               </Box>
