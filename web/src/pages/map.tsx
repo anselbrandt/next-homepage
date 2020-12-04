@@ -14,6 +14,7 @@ import {
   Link as ChakraLink,
   Image,
   Stack,
+  Heading,
 } from "@chakra-ui/core";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { withApollo } from "../utils/withApollo";
@@ -204,7 +205,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{modalInfo.address}</ModalHeader>
+            <ModalHeader />
             <ModalCloseButton />
             <ModalBody>
               <Box>
@@ -220,7 +221,10 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
                   />
                 </ChakraLink>
               </Box>
-              <Stack mt={10} spacing={2}>
+              <Stack mt={4} spacing={1}>
+                <Box>
+                  <Heading fontSize="md">{modalInfo.address}</Heading>
+                </Box>
                 <Box>Registration: {modalInfo.id}</Box>
                 <Box>
                   Last assessment: ${modalInfo.price.toLocaleString("en-US")}
@@ -243,7 +247,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
                       "+"
                     )}+Montreal`}
                   >
-                    Google Streetview <ExternalLinkIcon mx="2px" />
+                    Streetview <ExternalLinkIcon mx="2px" />
                   </ChakraLink>
                 </Box>
                 <Box color={linkColor[colorMode]}>
@@ -253,7 +257,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
                       "https://servicesenligne2.ville.montreal.qc.ca/sel/evalweb/index"
                     }
                   >
-                    Property Tax Records <ExternalLinkIcon mx="2px" />
+                    Tax Records <ExternalLinkIcon mx="2px" />
                   </ChakraLink>
                 </Box>
               </Stack>
