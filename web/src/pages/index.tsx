@@ -22,7 +22,7 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
   const min = Math.min(width! * 0.55, 600);
 
   return (
-    <Container minHeight="100vh">
+    <Container>
       <Navbar defaultColor={defaultColor} />
       <Box mt="5vw">
         <Heading fontSize="5vw">Ansel Brandt</Heading>
