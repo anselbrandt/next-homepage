@@ -33,7 +33,7 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
           <Code>Node.js</Code> + <Code>TypeScript</Code>
         </Text>
       </Box>
-      <Box mt="4vw" mb="4vw">
+      <Box mt="4vw" mb="20vh">
         <Grid
           canvasRef={canvasRef}
           width={min}
