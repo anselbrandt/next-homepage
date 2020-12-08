@@ -9,7 +9,6 @@ import {
   AccordionItem,
   AccordionButton,
   AccordionPanel,
-  AccordionIcon,
 } from "@chakra-ui/core";
 import { EditIcon, ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { colorsArr } from "../utils/mapUtils";
