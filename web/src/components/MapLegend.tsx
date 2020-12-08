@@ -26,7 +26,7 @@ export const MapLegend: React.FC<MapLegendProps> = ({
     <Box
       position="absolute"
       zIndex={10}
-      bottom="2px"
+      bottom="78px"
       left="2px"
       bg={bgColor[colorMode]}
       color={color[colorMode]}
