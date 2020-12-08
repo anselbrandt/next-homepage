@@ -102,6 +102,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     setViewState({
       ...viewState,
       ...value,
+      zoom: 18,
       transitionDuration: 1000,
       transitionInterpolator: new FlyToInterpolator(),
     });
