@@ -203,7 +203,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         handleOpen={onFilterOpen}
       />
       {modalInfo && (
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader />
