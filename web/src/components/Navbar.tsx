@@ -79,6 +79,11 @@ const Navbar: React.FC<NavbarProps> = ({ defaultColor }) => {
             </Link>
           </NextLink>
         ))}
+        <NextLink href="/favorites">
+          <Link href="/favorites" mr={8}>
+            Favorites
+          </Link>
+        </NextLink>
         {body}
         <DarkModeSwitch defaultColor={defaultColor} />
       </Flex>
