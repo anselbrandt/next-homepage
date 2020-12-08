@@ -24,7 +24,7 @@ const Index: React.FC<IndexProps> = ({ defaultColor }) => {
   return (
     <Container>
       <Navbar defaultColor={defaultColor} />
-      <Box mt="5vw">
+      <Box mt="10vw">
         <Heading fontSize="5vw">Ansel Brandt</Heading>
       </Box>
       <Box width="75vw" mt="5vw" maxWidth="750px">
