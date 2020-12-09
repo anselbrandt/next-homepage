@@ -113,9 +113,14 @@ const Grid: React.FC<GridProps> = ({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas!.width = width;
-    canvas!.height = height;
+    canvas!.style.width = width + "px";
+    canvas!.style.height = height + "px";
+    const scale = window.devicePixelRatio;
+    canvas!.width = Math.floor(width * scale);
+    canvas!.height = Math.floor(height * scale);
+
     const context = canvas!.getContext("2d");
+    context!.scale(scale, scale);
     context!.fillStyle = bgColor[colorMode];
     context!.fillRect(0, 0, width, height);
 
