@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Box } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/core";
 import { Container } from "../components/Container";
 import Navbar from "../components/Navbar";
 import { HistogramChart } from "../components/HistogramChart";
@@ -21,7 +21,7 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
   return (
     <Container>
       <Navbar defaultColor={defaultColor} />
-      <Box mt="30vh" maxW="48rem">
+      <Flex direction="column" justifyContent="center" h="100vh">
         <HistogramChart
           canvasRef={canvasRef}
           width={+(width! * 0.5).toFixed(0)}
@@ -30,9 +30,10 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
           color={"lightgray"}
           initialValue={320000}
           handleUpdatePrice={handleUpdatePrice}
+          axisColor={"dimgray"}
         />
-      </Box>
-      <Box>{price}</Box>
+        <Box>{price}</Box>
+      </Flex>
     </Container>
   );
 };

@@ -12,6 +12,7 @@ interface HistogramChartProps {
   color: string;
   initialValue: number;
   handleUpdatePrice: (...args: any) => any;
+  axisColor?: string;
 }
 
 export const HistogramChart: React.FC<HistogramChartProps> = ({
@@ -22,6 +23,7 @@ export const HistogramChart: React.FC<HistogramChartProps> = ({
   color,
   initialValue,
   handleUpdatePrice,
+  axisColor,
 }) => {
   const renderFrame = useRef<number | undefined>();
   const [isDown, setIsDown] = useState(false);
@@ -136,6 +138,23 @@ export const HistogramChart: React.FC<HistogramChartProps> = ({
       onEvent
     );
 
+    // const lines = [
+    //   {
+    //     x1: 0,
+    //     y1: pointer ? pointer[1] : 0,
+    //     x2: width,
+    //     y2: pointer ? pointer[1] : 0,
+    //     color: isDown ? "#1E90FF" : "#FF6347",
+    //   },
+    //   {
+    //     x1: pointer ? pointer[0] : 0,
+    //     y1: 0,
+    //     x2: pointer ? pointer[0] : 0,
+    //     y2: height,
+    //     color: isDown ? "#1E90FF" : "#FF6347",
+    //   },
+    // ];
+
     const borderColor = isEntered ? "#1E90FF" : "#FF6347";
 
     const cursor = {
@@ -149,10 +168,23 @@ export const HistogramChart: React.FC<HistogramChartProps> = ({
       context.strokeRect(0, 0, width, height);
 
       context.beginPath();
+      const gradient = context.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, color);
+      // gradient.addColorStop(0.5, color);
+      gradient.addColorStop(1, "transparent");
       getArea(data);
-      context.fillStyle = color;
-      context.strokeStyle = color;
+      context.fillStyle = gradient;
+      context.strokeStyle = axisColor;
+      context.stroke();
       context.fill();
+
+      // for (const { x1, y1, x2, y2, color } of lines) {
+      //   context.beginPath();
+      //   context.moveTo(x1, y1);
+      //   context.lineTo(x2, y2);
+      //   context.strokeStyle = color;
+      //   context.stroke();
+      // }
 
       context.beginPath();
       context.moveTo(cursor.x, 0);
@@ -175,10 +207,11 @@ export const HistogramChart: React.FC<HistogramChartProps> = ({
     color,
     data,
     initialValue,
+    axisColor,
   ]);
   return (
     <>
-      <canvas ref={canvasRef}></canvas>
+      <canvas ref={canvasRef} />
     </>
   );
 };
