@@ -32,9 +32,14 @@ export const HistogramChart: React.FC<HistogramChartProps> = ({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext("2d");
+    canvas!.style.width = width + "px";
+    canvas!.style.height = height + "px";
+    const scale = window.devicePixelRatio;
+    canvas!.width = Math.floor(width * scale);
+    canvas!.height = Math.floor(height * scale);
+
+    const context = canvas!.getContext("2d");
+    context!.scale(scale, scale);
 
     const xValues = data.map((value) => value[0]);
     const yValues = data.map((value) => value[1]);
