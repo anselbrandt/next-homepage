@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { select, line, axisBottom, axisLeft, scaleLinear, pointers } from "d3";
+import { select, line, area, scaleLinear, pointers } from "d3";
 
 interface HistogramPickerProps {
   svgRef: any;
@@ -7,8 +7,10 @@ interface HistogramPickerProps {
   height: number;
   data: any[];
   color: string;
-  chartColor: string;
+  highlightColor: string;
   muteColor: string;
+  strokeColor: string;
+  fillColor: string;
   initialValue: number;
   handleUpdatePrice: (...args: any) => any;
 }
@@ -19,21 +21,22 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
   height,
   data,
   color,
-  chartColor,
+  highlightColor,
   muteColor,
+  strokeColor,
+  fillColor,
   initialValue,
-  // handleUpdatePrice,
+  handleUpdatePrice,
 }) => {
   const pointer = useRef<number[] | null>(null);
   const position = useRef<number[] | null>(null);
   const isSet = useRef<boolean>(false);
   const [update, setUpdate] = useState(false);
-  const [values, setValues] = useState<[any, any] | undefined>();
 
   useEffect(() => {
     if (width && height) {
-      const xTicks = 5;
-      const yTicks = 3;
+      //   const xTicks = 5;
+      //   const yTicks = 3;
 
       const xValues = data.map((value) => value[0]);
       const yValues = data.map((value) => value[1]);
@@ -62,23 +65,42 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
       const xScale = scaleLinear().domain(domain).range([0, width]);
       const yScale = scaleLinear().domain(range).range([height, 0]);
 
-      const xAxis = (g: any) =>
-        g
-          .attr("transform", `translate(0,${height})`)
-          .attr("color", color)
-          .call(axisBottom(xScale).ticks(xTicks));
+      //   const xAxis = (g: any) =>
+      //     g
+      //       .attr("transform", `translate(0,${height})`)
+      //       .attr("color", color)
+      //       .call(axisBottom(xScale).ticks(xTicks));
 
-      const yAxis = (g: any) =>
-        g.attr("color", color).call(axisLeft(yScale).ticks(yTicks));
+      //   const yAxis = (g: any) =>
+      //     g.attr("color", color).call(axisLeft(yScale).ticks(yTicks));
 
-      const getLine = line()
+      const getLine = area()
         .x((d) => xScale(d[0]))
-        .y((d) => yScale(d[1]));
+        .y0(yScale(0))
+        .y1((d) => yScale(d[1]));
 
       const chart = () => {
         const svg = select(svgRef.current);
         svg.selectAll("g").remove();
         svg.attr("width", `${width}px`).attr("height", `${height}px`);
+
+        const path = () => {
+          svg
+            .append("g")
+            .attr("fill", fillColor)
+            .attr("stroke", strokeColor)
+            .attr("stroke-width", 1.5)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .selectAll("path")
+            .data([data])
+            .join("path")
+            .attr("class", "line")
+            .attr("d", (d) => getLine(d))
+            .attr("pointer-events", "none");
+        };
+
+        svg.call(path);
 
         const xRule = svg
           .append("g")
@@ -90,16 +112,6 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           .attr("y1", 0)
           .attr("x2", 0)
           .attr("y2", height);
-        const yRule = svg
-          .append("g")
-          .attr("stroke-width", 1)
-          .attr("display", "none");
-        // yRule
-        //   .append("line")
-        //   .attr("x1", 0)
-        //   .attr("y1", 0)
-        //   .attr("x2", width)
-        //   .attr("y2", 0);
 
         const cursor = svg
           .append("g")
@@ -107,7 +119,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           .attr("display", "none");
 
         if (initialValue && !position.current) {
-          cursor.attr("display", null).attr("stroke", chartColor);
+          cursor.attr("display", null).attr("stroke", highlightColor);
           cursor
             .append("line")
             .attr("x1", xScale(initialValue))
@@ -117,7 +129,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
         }
         if (position.current) {
           const [x, y] = position.current;
-          cursor.attr("display", null).attr("stroke", chartColor);
+          cursor.attr("display", null).attr("stroke", highlightColor);
           cursor
             .append("line")
             .attr("x1", x)
@@ -148,33 +160,25 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           const type = event.type;
 
           if (["mouseenter"].includes(type)) {
-            svg.selectAll(".line").attr("stroke", muteColor);
+            // svg.selectAll(".line").attr("stroke", muteColor);
           }
           if (["touchstart", "mousedown"].includes(type)) {
-            svg.selectAll(".line").attr("stroke", muteColor);
+            // svg.selectAll(".line").attr("stroke", muteColor);
           }
           if (["touchmove", "mousemove"].includes(type)) {
-            // cursor.attr("display", "none");
             const [x, y] = pointers(event)[0];
             if (withinBounds([x, y])) {
-              setValues([
-                getValue(xScale.invert(x)),
-                getValue(yScale.invert(y)),
-              ]);
+              handleUpdatePrice(getValue(xScale.invert(x)));
               pointer.current = [x, y];
               position.current = [x, y];
               xRule
                 .attr("display", null)
-                .attr("stroke", chartColor)
+                .attr("stroke", highlightColor)
                 .attr("transform", `translate(${x},0)`);
-              yRule
-                .attr("display", null)
-                .attr("stroke", chartColor)
-                .attr("transform", `translate(0,${y})`);
               if (!isSet.current) {
                 cursor
                   .attr("display", null)
-                  .attr("stroke", chartColor)
+                  .attr("stroke", highlightColor)
                   .attr("x1", x)
                   .attr("y1", 0)
                   .attr("x2", x)
@@ -185,6 +189,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
             }
           }
           if (["touchend", "click", "mouseup"].includes(type)) {
+            cursor.attr("display", null).attr("stroke", highlightColor);
             if (position.current && isSet.current) {
               const [x, y] = pointer.current!;
               cursor
@@ -198,19 +203,15 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
               isSet.current = true;
             }
             if (!pointers(event)[0]) {
-              svg.selectAll(".line").attr("stroke", chartColor);
+              svg.selectAll(".line").attr("stroke", strokeColor);
               xRule.attr("display", "none");
-              yRule.attr("display", "none");
             }
             setUpdate((prev) => !prev);
           }
           if (["mouseout"].includes(type)) {
-            svg.selectAll(".line").attr("stroke", chartColor);
+            cursor.attr("display", null).attr("stroke", highlightColor);
+            svg.selectAll(".line").attr("stroke", strokeColor);
             xRule.attr("display", "none");
-            yRule.attr("display", "none");
-            if (!isSet.current) {
-              cursor.attr("display", "none");
-            }
           }
         };
 
@@ -228,38 +229,27 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
               false
             );
 
-        svg.append("g").call(xAxis);
-        svg.append("g").call(yAxis);
+        // svg.append("g").call(xAxis);
+        // svg.append("g").call(yAxis);
         svg.append("g").call(rect);
-
-        const path = () => {
-          svg
-            .append("g")
-            .attr("fill", "none")
-            .attr("stroke", chartColor)
-            .attr("stroke-width", 1.5)
-            .attr("stroke-linejoin", "round")
-            .attr("stroke-linecap", "round")
-            .selectAll("path")
-            .data([data])
-            .join("path")
-            .attr("class", "line")
-            .attr("d", (d) => getLine(d))
-            .attr("pointer-events", "none");
-        };
-
-        svg.call(path);
       };
       chart();
     }
-  }, [width, height, svgRef, update, color, chartColor, muteColor]);
+  }, [
+    width,
+    height,
+    svgRef,
+    update,
+    color,
+    highlightColor,
+    muteColor,
+    strokeColor,
+    fillColor,
+  ]);
 
   return (
     <div>
       <svg ref={svgRef} overflow="visible"></svg>
-      <div style={{ marginTop: 30 }}>
-        {values ? `${values[0]}, ${values[1]}` : "0, 0"}
-      </div>
     </div>
   );
 };

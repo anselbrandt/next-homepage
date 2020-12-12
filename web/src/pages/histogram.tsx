@@ -14,12 +14,30 @@ interface TestProps {
 const Test: React.FC<TestProps> = ({ defaultColor }) => {
   const { colorMode } = useColorMode();
   const color = { light: "black", dark: "white" };
-  const chartColor = { light: colors.purple[600], dark: colors.purple[300] };
+  const highlightColor = {
+    light: colors.purple[600],
+    dark: colors.purple[300],
+  };
   const muteColor = { light: colors.purple[200], dark: colors.purple[600] };
+  const strokeColor = { light: colors.gray[400], dark: colors.gray[600] };
+  const fillColor = { light: colors.gray[200], dark: colors.gray[700] };
 
   const [price, setPrice] = useState<number | undefined>();
   const { width, height } = useGetViewport();
   const svgRef = useRef();
+
+  const initialValue = 320000;
+
+  const getValue = (value: number) => {
+    switch (true) {
+      case value > 1000000:
+        return `${(value / 1000000).toFixed(2)}M`;
+      case value > 1000:
+        return `${(value / 1000).toFixed(0)},000`;
+      default:
+        return 0;
+    }
+  };
 
   const handleUpdatePrice = (value: number) => {
     setPrice(value);
@@ -34,12 +52,14 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
           height={+(height! * 0.25).toFixed(0)}
           data={data}
           color={color[colorMode]}
-          chartColor={chartColor[colorMode]}
+          highlightColor={highlightColor[colorMode]}
           muteColor={muteColor[colorMode]}
-          initialValue={320000}
+          strokeColor={strokeColor[colorMode]}
+          fillColor={fillColor[colorMode]}
+          initialValue={initialValue}
           handleUpdatePrice={handleUpdatePrice}
         />
-        <Box>{price}</Box>
+        <Box mt={30}>{price ? price : getValue(initialValue)}</Box>
       </Flex>
     </Container>
   );
