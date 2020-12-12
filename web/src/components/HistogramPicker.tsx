@@ -32,7 +32,6 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
 
   useEffect(() => {
     if (width && height) {
-      console.log(chartColor);
       const xTicks = 5;
       const yTicks = 3;
 
@@ -102,20 +101,29 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
         //   .attr("x2", width)
         //   .attr("y2", 0);
 
-        const dot = svg.append("g").attr("display", "none");
-        dot.append("circle").attr("r", 2.5);
+        const cursor = svg
+          .append("g")
+          .attr("stroke-width", 1)
+          .attr("display", "none");
+
         if (initialValue && !position.current) {
-          dot
-            .attr("display", null)
-            .attr("fill", chartColor)
-            .attr("transform", `translate(${xScale(initialValue)},${0})`);
+          cursor.attr("display", null).attr("stroke", chartColor);
+          cursor
+            .append("line")
+            .attr("x1", xScale(initialValue))
+            .attr("y1", 0)
+            .attr("x2", xScale(initialValue))
+            .attr("y2", height);
         }
         if (position.current) {
           const [x, y] = position.current;
-          dot
-            .attr("display", null)
-            .attr("fill", chartColor)
-            .attr("transform", `translate(${x},${y})`);
+          cursor.attr("display", null).attr("stroke", chartColor);
+          cursor
+            .append("line")
+            .attr("x1", x)
+            .attr("y1", 0)
+            .attr("x2", x)
+            .attr("y2", height);
         }
 
         const withinBounds = (arr: [number, number]) => {
@@ -146,6 +154,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
             svg.selectAll(".line").attr("stroke", muteColor);
           }
           if (["touchmove", "mousemove"].includes(type)) {
+            // cursor.attr("display", "none");
             const [x, y] = pointers(event)[0];
             if (withinBounds([x, y])) {
               setValues([
@@ -163,10 +172,13 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
                 .attr("stroke", chartColor)
                 .attr("transform", `translate(0,${y})`);
               if (!isSet.current) {
-                dot
+                cursor
                   .attr("display", null)
                   .attr("stroke", chartColor)
-                  .attr("transform", `translate(${x},${y})`);
+                  .attr("x1", x)
+                  .attr("y1", 0)
+                  .attr("x2", x)
+                  .attr("y2", height);
               }
             } else {
               position.current = null;
@@ -175,7 +187,11 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           if (["touchend", "click", "mouseup"].includes(type)) {
             if (position.current && isSet.current) {
               const [x, y] = pointer.current!;
-              dot.attr("transform", `translate(${x},${y})`);
+              cursor
+                .attr("x1", x)
+                .attr("y1", 0)
+                .attr("x2", x)
+                .attr("y2", height);
               isSet.current = true;
             }
             if (position.current && !isSet.current) {
@@ -193,7 +209,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
             xRule.attr("display", "none");
             yRule.attr("display", "none");
             if (!isSet.current) {
-              dot.attr("display", "none");
+              cursor.attr("display", "none");
             }
           }
         };
