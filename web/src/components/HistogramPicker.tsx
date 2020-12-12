@@ -47,20 +47,20 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
       const domain = [xMin, xMax];
       const range = [yMin, yMax];
 
-      const getValue = (value: number) => {
-        switch (true) {
-          case value > xMax:
-            return xMax;
-          case value > 1000000:
-            return `${(value / 1000000).toFixed(2)}M`;
-          case value > 1000:
-            return `${(value / 1000).toFixed(0)},000`;
-          case value > xMin:
-            return value.toFixed(0);
-          default:
-            return 0;
-        }
-      };
+      // const getValue = (value: number) => {
+      //   switch (true) {
+      //     case value > xMax:
+      //       return xMax;
+      //     case value > 1000000:
+      //       return `${(value / 1000000).toFixed(2)}M`;
+      //     case value > 1000:
+      //       return `${(value / 1000).toFixed(0)},000`;
+      //     case value > xMin:
+      //       return value.toFixed(0);
+      //     default:
+      //       return 0;
+      //   }
+      // };
 
       const xScale = scaleLinear().domain(domain).range([0, width]);
       const yScale = scaleLinear().domain(range).range([height, 0]);
@@ -168,7 +168,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           if (["touchmove", "mousemove"].includes(type)) {
             const [x, y] = pointers(event)[0];
             if (withinBounds([x, y])) {
-              handleUpdatePrice(getValue(xScale.invert(x)));
+              handleUpdatePrice(+(xScale.invert(x) / 1000).toFixed(0) * 1000);
               pointer.current = [x, y];
               position.current = [x, y];
               xRule

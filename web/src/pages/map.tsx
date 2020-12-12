@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   useColorMode,
@@ -15,6 +15,7 @@ import {
   Image,
   Stack,
   Heading,
+  Flex,
 } from "@chakra-ui/core";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { withApollo } from "../utils/withApollo";
@@ -31,6 +32,10 @@ import { getRgb } from "../utils/getColor";
 import Geocoder from "../components/Geocoder";
 import { MapLegend } from "../components/MapLegend";
 import { GOOGLEKEY } from "../../constants";
+import { HistogramPicker } from "../components/HistogramPicker";
+// import { useGetViewport } from "../hooks/useGetViewport";
+import { data } from "../data/histogram";
+import colors from "../utils/colors";
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 128, height: 128, mask: true },
@@ -60,6 +65,33 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     light: `${defaultColor}.500`,
     dark: `${defaultColor}.200`,
   };
+  const color = { light: "black", dark: "white" };
+  const highlightColor = {
+    light: colors.purple[600],
+    dark: colors.purple[300],
+  };
+  const muteColor = { light: colors.purple[200], dark: colors.purple[600] };
+  const strokeColor = { light: colors.gray[400], dark: colors.gray[600] };
+  const fillColor = { light: colors.gray[200], dark: colors.gray[700] };
+
+  const [price, setPrice] = useState<number>(320000);
+  // const { width, height } = useGetViewport();
+  const [width, height] = [600, 400];
+  const svgRef = useRef();
+
+  const initialValue = 320000;
+
+  const getValue = (value: number) => {
+    switch (true) {
+      case value > 1000000:
+        return `${(value / 1000000).toFixed(2)}M`;
+      case value > 1000:
+        return `${(value / 1000).toFixed(0)},000`;
+      default:
+        return 0;
+    }
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalInfo, setModalInfo] = useState<any | undefined>();
   const [lastPicked, setLastPicked] = useState<number[]>([]);
@@ -69,6 +101,10 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     onOpen: onFilterOpen,
     onClose: onFilterClose,
   } = useDisclosure();
+
+  const handleUpdatePrice = (value: number) => {
+    setPrice(value);
+  };
 
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
   const handleChangeViewState = ({ viewState }: any) => setViewState(viewState);
@@ -123,9 +159,9 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
     onOpen();
   };
 
-  const target = 500000;
+  // const target = price ? price : initialValue;
   const range: [number, number, number] = [0.05, 0.15, 0.3];
-  const { bins } = useGetBins({ target: target, range: range });
+  const { bins } = useGetBins({ target: price, range: range });
 
   const layers = [
     new MVTLayer({
@@ -274,14 +310,36 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
       )}
       <Modal isOpen={isFilterOpen} onClose={onFilterClose} isCentered>
         <ModalContent>
-          <ModalHeader>Filter Title</ModalHeader>
+          <ModalHeader>
+            <Box textAlign="center">Assessment Value</Box>
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>Filter Body</ModalBody>
-
+          <ModalBody>
+            <Flex direction="column" alignItems="center">
+              <Box mt={2} mb={10}>
+                {price ? "$" + price : "$" + getValue(initialValue)}
+              </Box>
+              <Box mb={4}>
+                <HistogramPicker
+                  svgRef={svgRef}
+                  width={+(width! * 0.5).toFixed(0)}
+                  height={+(height! * 0.25).toFixed(0)}
+                  data={data}
+                  color={color[colorMode]}
+                  highlightColor={highlightColor[colorMode]}
+                  muteColor={muteColor[colorMode]}
+                  strokeColor={strokeColor[colorMode]}
+                  fillColor={fillColor[colorMode]}
+                  initialValue={initialValue}
+                  handleUpdatePrice={handleUpdatePrice}
+                />
+              </Box>
+            </Flex>
+          </ModalBody>
           <ModalFooter>
-            <Button colorScheme={defaultColor} mr={3} onClick={onFilterClose}>
+            {/* <Button colorScheme={defaultColor} mr={3} onClick={onFilterClose}>
               Close
-            </Button>
+            </Button> */}
           </ModalFooter>
         </ModalContent>
       </Modal>
