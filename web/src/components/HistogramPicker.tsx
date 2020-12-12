@@ -21,7 +21,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
   color,
   chartColor,
   muteColor,
-  // initialValue,
+  initialValue,
   // handleUpdatePrice,
 }) => {
   const pointer = useRef<number[] | null>(null);
@@ -95,15 +95,21 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           .append("g")
           .attr("stroke-width", 1)
           .attr("display", "none");
-        yRule
-          .append("line")
-          .attr("x1", 0)
-          .attr("y1", 0)
-          .attr("x2", width)
-          .attr("y2", 0);
+        // yRule
+        //   .append("line")
+        //   .attr("x1", 0)
+        //   .attr("y1", 0)
+        //   .attr("x2", width)
+        //   .attr("y2", 0);
 
         const dot = svg.append("g").attr("display", "none");
         dot.append("circle").attr("r", 2.5);
+        if (initialValue && !position.current) {
+          dot
+            .attr("display", null)
+            .attr("fill", chartColor)
+            .attr("transform", `translate(${xScale(initialValue)},${0})`);
+        }
         if (position.current) {
           const [x, y] = position.current;
           dot
