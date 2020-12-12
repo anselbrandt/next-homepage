@@ -58,7 +58,7 @@ const main = async () => {
     cors({
       origin: true,
       credentials: true,
-    })
+    }) as any
   );
 
   app.use((req: any, _, next: any) => {
