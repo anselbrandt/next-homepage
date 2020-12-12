@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { select, line, area, scaleLinear, pointers } from "d3";
+import { select, area, scaleLinear, pointers } from "d3";
 
 interface HistogramPickerProps {
   svgRef: any;
@@ -128,7 +128,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
             .attr("y2", height);
         }
         if (position.current) {
-          const [x, y] = position.current;
+          const [x] = position.current;
           cursor.attr("display", null).attr("stroke", highlightColor);
           cursor
             .append("line")
@@ -191,7 +191,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           if (["touchend", "click", "mouseup"].includes(type)) {
             cursor.attr("display", null).attr("stroke", highlightColor);
             if (position.current && isSet.current) {
-              const [x, y] = pointer.current!;
+              const [x] = pointer.current!;
               cursor
                 .attr("x1", x)
                 .attr("y1", 0)
