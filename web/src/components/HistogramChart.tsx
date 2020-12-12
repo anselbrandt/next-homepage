@@ -1,11 +1,8 @@
-// cornflower #1E90FF
-// tomato #FF6347
-
-import React, { useEffect, useState, useRef } from "react";
-import { select, pointers, scaleLinear, area, curveBasis } from "d3";
+import React, { useEffect, useRef, useState } from "react";
+import { select, line, axisBottom, axisLeft, scaleLinear, pointers } from "d3";
 
 interface HistogramChartProps {
-  canvasRef: any;
+  svgRef: any;
   width: number;
   height: number;
   data: any[];
@@ -16,39 +13,32 @@ interface HistogramChartProps {
 }
 
 export const HistogramChart: React.FC<HistogramChartProps> = ({
-  canvasRef,
+  svgRef,
   width,
   height,
   data,
-  color,
-  initialValue,
-  handleUpdatePrice,
-  axisColor,
+  // color,
+  // initialValue,
+  // handleUpdatePrice,
+  // axisColor,
 }) => {
-  const renderFrame = useRef<number | undefined>();
-  const [isDown, setIsDown] = useState(false);
-  const [isEntered, setIsEntered] = useState(false);
-  const [position, setPosition] = useState<[number, number] | undefined>();
-  const [pointer, setPointer] = useState<[number, number] | undefined>();
-  const [isClicked, setIsClicked] = useState(false);
+  const pointer = useRef(null);
+  const position = useRef<[] | null>(null);
+  const isSet = useRef<boolean>(false);
+  const [update, setUpdate] = useState(false);
+  const [values, setValues] = useState();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    canvas!.style.width = width + "px";
-    canvas!.style.height = height + "px";
-    const scale = window.devicePixelRatio;
-    canvas!.width = Math.floor(width * scale);
-    canvas!.height = Math.floor(height * scale);
-
-    const context = canvas!.getContext("2d");
-    context!.scale(scale, scale);
+    const axisColor = "dimgray";
+    const xTicks = 5;
+    const yTicks = 3;
 
     const xValues = data.map((value) => value[0]);
     const yValues = data.map((value) => value[1]);
-    const yMin = Math.min(...yValues);
-    const yMax = Math.max(...yValues);
     const xMin = Math.min(...xValues);
     const xMax = Math.max(...xValues);
+    const yMin = Math.min(...yValues);
+    const yMax = Math.max(...yValues);
     const domain = [xMin, xMax];
     const range = [yMin, yMax];
 
@@ -70,148 +60,178 @@ export const HistogramChart: React.FC<HistogramChartProps> = ({
     const xScale = scaleLinear().domain(domain).range([0, width]);
     const yScale = scaleLinear().domain(range).range([height, 0]);
 
-    const getArea = area()
-      .curve(curveBasis)
-      .x((value) => xScale(value[0]))
-      .y1((value) => yScale(value[1]))
-      .y0(yScale(0))
-      .context(context);
+    const xAxis = (g: any) =>
+      g
+        .attr("transform", `translate(0,${height})`)
+        .attr("color", axisColor)
+        .call(axisBottom(xScale).ticks(xTicks));
 
-    const withinBounds = (x: number, y: number) => {
-      switch (true) {
-        case x < 0:
-          return false;
-        case x > width:
-          return false;
-        case y < 0:
-          return false;
-        case y > height:
-          return false;
-        default:
-          return true;
+    const yAxis = (g: any) =>
+      g.attr("color", axisColor).call(axisLeft(yScale).ticks(yTicks));
+
+    const getLine = line()
+      .x((d) => xScale(d[0]))
+      .y((d) => yScale(d[1]));
+
+    const chart = () => {
+      const svg = select(svgRef.current);
+      svg.selectAll("g").remove();
+      svg.attr("width", `${width}px`).attr("height", `${height}px`);
+
+      const xRule = svg
+        .append("g")
+        .attr("stroke-width", 1)
+        .attr("display", "none");
+      xRule
+        .append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", 0)
+        .attr("y2", height);
+      const yRule = svg
+        .append("g")
+        .attr("stroke-width", 1)
+        .attr("display", "none");
+      yRule
+        .append("line")
+        .attr("x1", 0)
+        .attr("y1", 0)
+        .attr("x2", width)
+        .attr("y2", 0);
+
+      const dot = svg.append("g").attr("display", "none");
+      dot.append("circle").attr("r", 2.5);
+      if (position.current) {
+        const [x, y] = position.current;
+        dot
+          .attr("display", null)
+          .attr("fill", "steelblue")
+          .attr("transform", `translate(${x},${y})`);
       }
-    };
 
-    const onEvent = (event: any) => {
-      event.preventDefault();
-      const type = event.type;
-
-      if (pointers(event) && pointers(event)[0]) {
-        const [x, y] = pointers(event)[0];
-
-        if (["mouseenter", "pointerenter"].includes(type)) {
-          setIsEntered(true);
-          setIsClicked(false);
+      const withinBounds = (arr: [number, number]) => {
+        switch (true) {
+          case arr[0] < 0:
+            return false;
+          case arr[0] > width:
+            return false;
+          case arr[1] < 0:
+            return false;
+          case arr[1] > height:
+            return false;
+          default:
+            return true;
         }
-        if (["mousedown", "pointerdown", "touchstart"].includes(type))
-          setIsDown(true);
-        if (type === "click") {
-          setIsClicked((prev) => !prev);
-          setPosition(pointers(event)[0]);
-          handleUpdatePrice(getValue(xScale.invert(x)));
+      };
+
+      const onEvent = (event: any) => {
+        if (event.cancelable) {
+          event.preventDefault();
         }
-        if (["mousemove", "touchmove", "pointermove"].includes(type)) {
-          if (withinBounds(x, y)) {
-            setPointer(pointers(event)[0]);
-            if (!isClicked) {
-              setPosition(pointers(event)[0]);
-              handleUpdatePrice(getValue(xScale.invert(x)));
+        const type = event.type;
+
+        if (["mouseenter"].includes(type)) {
+          svg.selectAll(".line").attr("stroke", "#ddd");
+        }
+        if (["touchstart", "mousedown"].includes(type)) {
+          svg.selectAll(".line").attr("stroke", "#ddd");
+        }
+        if (["touchmove", "mousemove"].includes(type)) {
+          const [x, y] = pointers(event)[0];
+          if (withinBounds([x, y])) {
+            setValues([getValue(xScale.invert(x)), getValue(yScale.invert(y))]);
+            pointer.current = [x, y];
+            position.current = [x, y];
+            xRule
+              .attr("display", null)
+              .attr("stroke", "steelblue")
+              .attr("transform", `translate(${x},0)`);
+            yRule
+              .attr("display", null)
+              .attr("stroke", "steelblue")
+              .attr("transform", `translate(0,${y})`);
+            if (!isSet.current) {
+              dot
+                .attr("display", null)
+                .attr("stroke", "steelblue")
+                .attr("transform", `translate(${x},${y})`);
             }
+          } else {
+            position.current = null;
           }
         }
-
-        if (["mouseup", "pointerup", "touchend"].includes(type))
-          setIsDown(false);
-        if (["mouseout", "pointerout"].includes(type)) {
-          setIsEntered(false);
-          setIsDown(false);
-          setPointer(undefined);
+        if (["touchend", "click", "mouseup"].includes(type)) {
+          if (position.current && isSet.current) {
+            const [x, y] = pointer.current;
+            dot.attr("transform", `translate(${x},${y})`);
+            isSet.current = true;
+          }
+          if (position.current && !isSet.current) {
+            isSet.current = true;
+          }
+          if (!pointers(event)[0]) {
+            svg.selectAll(".line").attr("stroke", "steelblue");
+            xRule.attr("display", "none");
+            yRule.attr("display", "none");
+          }
+          setUpdate((prev) => !prev);
         }
-      }
+        if (["mouseout"].includes(type)) {
+          svg.selectAll(".line").attr("stroke", "steelblue");
+          xRule.attr("display", "none");
+          yRule.attr("display", "none");
+          if (!isSet.current) {
+            dot.attr("display", "none");
+          }
+        }
+      };
+
+      const rect = (g: any) =>
+        g
+          .append("rect")
+          .attr("fill", "transparent")
+          .attr("width", width)
+          .attr("height", height)
+          .on(
+            "click " +
+              "mouseenter mouseout mousedown mouseup mousemove " +
+              "touchstart touchend touchmove",
+            onEvent,
+            false
+          );
+
+      svg.append("g").call(xAxis);
+      svg.append("g").call(yAxis);
+      svg.append("g").call(rect);
+
+      const path = () => {
+        svg
+          .append("g")
+          .attr("fill", "none")
+          .attr("stroke", "steelblue")
+          .attr("stroke-width", 1.5)
+          .attr("stroke-linejoin", "round")
+          .attr("stroke-linecap", "round")
+          .selectAll("path")
+          .data([data])
+          .join("path")
+          .attr("class", "line")
+          .style("mix-blend-mode", "multiply")
+          .attr("d", (d) => getLine(d))
+          .attr("pointer-events", "none");
+      };
+
+      svg.call(path);
     };
+    chart();
+  }, [width, height, svgRef, update]);
 
-    select(context.canvas).on(
-      "click " +
-        "mouseenter mouseout mousedown mouseup mousemove " +
-        "touchstart touchend touchmove " +
-        "pointerenter pointerout pointerup pointerdown pointermove",
-      onEvent
-    );
-
-    // const lines = [
-    //   {
-    //     x1: 0,
-    //     y1: pointer ? pointer[1] : 0,
-    //     x2: width,
-    //     y2: pointer ? pointer[1] : 0,
-    //     color: isDown ? "#1E90FF" : "#FF6347",
-    //   },
-    //   {
-    //     x1: pointer ? pointer[0] : 0,
-    //     y1: 0,
-    //     x2: pointer ? pointer[0] : 0,
-    //     y2: height,
-    //     color: isDown ? "#1E90FF" : "#FF6347",
-    //   },
-    // ];
-
-    const borderColor = isEntered ? "#1E90FF" : "#FF6347";
-
-    const cursor = {
-      x: position ? position[0] : xScale(initialValue),
-      color: isDown ? "#1E90FF" : "#FF6347",
-    };
-
-    function draw() {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      context.strokeStyle = borderColor;
-      context.strokeRect(0, 0, width, height);
-
-      context.beginPath();
-      const gradient = context.createLinearGradient(0, 0, 0, height);
-      gradient.addColorStop(0, color);
-      // gradient.addColorStop(0.5, color);
-      gradient.addColorStop(1, "transparent");
-      getArea(data);
-      context.fillStyle = gradient;
-      context.strokeStyle = axisColor;
-      context.stroke();
-      context.fill();
-
-      // for (const { x1, y1, x2, y2, color } of lines) {
-      //   context.beginPath();
-      //   context.moveTo(x1, y1);
-      //   context.lineTo(x2, y2);
-      //   context.strokeStyle = color;
-      //   context.stroke();
-      // }
-
-      context.beginPath();
-      context.moveTo(cursor.x, 0);
-      context.lineTo(cursor.x, height);
-      context.strokeStyle = cursor.color;
-      context.stroke();
-
-      renderFrame.current = requestAnimationFrame(draw);
-    }
-    renderFrame.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(renderFrame.current as number);
-  }, [
-    canvasRef,
-    width,
-    height,
-    isDown,
-    isEntered,
-    position,
-    pointer,
-    color,
-    data,
-    initialValue,
-    axisColor,
-  ]);
   return (
-    <>
-      <canvas ref={canvasRef} />
-    </>
+    <div>
+      <svg ref={svgRef} overflow="visible"></svg>
+      <div style={{ marginTop: 30 }}>
+        {values ? `${values[0]}, ${values[1]}` : "0, 0"}
+      </div>
+    </div>
   );
 };

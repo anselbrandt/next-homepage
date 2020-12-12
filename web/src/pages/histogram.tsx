@@ -13,7 +13,7 @@ interface TestProps {
 const Test: React.FC<TestProps> = ({ defaultColor }) => {
   const [price, setPrice] = useState<number | undefined>();
   const { width, height } = useGetViewport();
-  const canvasRef = useRef();
+  const svgRef = useRef();
 
   const handleUpdatePrice = (value: number) => {
     setPrice(value);
@@ -23,7 +23,7 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
       <Navbar defaultColor={defaultColor} />
       <Flex direction="column" justifyContent="center" h="100vh">
         <HistogramChart
-          canvasRef={canvasRef}
+          svgRef={svgRef}
           width={+(width! * 0.5).toFixed(0)}
           height={+(height! * 0.25).toFixed(0)}
           data={data}
