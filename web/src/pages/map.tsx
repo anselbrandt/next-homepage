@@ -321,7 +321,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
           <ModalBody>
             <Flex direction="column" alignItems="center">
               <Box mt={2} mb={10}>
-                {price ? "$" + price : "$" + getValue(initialValue)}
+                {price ? "$" + getValue(price) : "$" + getValue(initialValue)}
               </Box>
               <Box mb={4}>
                 <HistogramPicker

@@ -32,6 +32,17 @@ export const MapLegend: React.FC<MapLegendProps> = ({
 
   const startRow = [2, 4, 6, 8, 10, 12, 14, 16];
 
+  const getValue = (value: number) => {
+    switch (true) {
+      case value > 1000000:
+        return `${(value / 1000000).toFixed(2)}M`;
+      case value > 1000:
+        return `${(value / 1000).toFixed(0)}K`;
+      default:
+        return 0;
+    }
+  };
+
   return (
     <Box
       position="absolute"
@@ -85,7 +96,7 @@ export const MapLegend: React.FC<MapLegendProps> = ({
                         colSpan={3}
                         fontSize="sm"
                       >
-                        ${(+(value / 1000).toFixed(0)).toLocaleString()}k
+                        ${getValue(value)}
                       </GridItem>
                     ))}
                   {range.reverse().map((value, index) => (
