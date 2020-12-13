@@ -58,6 +58,7 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
           fillColor={fillColor[colorMode]}
           initialValue={initialValue}
           handleUpdatePrice={handleUpdatePrice}
+          handleUpdateTarget={handleUpdatePrice}
         />
         <Box mt={30}>{price ? price : getValue(initialValue)}</Box>
       </Flex>
