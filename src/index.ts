@@ -10,6 +10,7 @@ import {
   DATABASE_URL,
   PORT,
   CLIENT_ORIGIN,
+  GOOGLEKEY,
 } from "./constants";
 import path from "path";
 import { createConnection } from "typeorm";
@@ -30,6 +31,8 @@ import { Like } from "./entities/Like";
 import { User } from "./entities/User";
 import { Favorite } from "./entities/Favorite";
 import { createFavoriteLoader } from "./utils/createFavoriteLoader";
+import publicIp from "public-ip";
+import fetch from "node-fetch";
 
 const main = async () => {
   const conn = await createConnection({
@@ -97,6 +100,23 @@ const main = async () => {
 
   app.get("/", (_, res) => {
     res.send("Nothing to see here.");
+  });
+
+  app.get("/api/location", async (_, res) => {
+    const serverIP = await publicIp.v4();
+    const response = await fetch(
+      `https://www.googleapis.com/geolocation/v1/geolocate?key=${GOOGLEKEY}`,
+      {
+        method: "POST",
+        body: JSON.stringify({ considerIp: true }),
+      }
+    );
+    const data = await response.json();
+    const location = {
+      location: await data.location,
+      ip: await serverIP,
+    };
+    res.send(JSON.stringify(location));
   });
 
   const apolloServer = new ApolloServer({
