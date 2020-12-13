@@ -25,22 +25,20 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
     <Container>
       <Navbar defaultColor={defaultColor} />
       <Box mt="30vh" maxW="48rem">
-        <Button onClick={onOpen}>Open Modal</Button>
+        <Button mt={3} onClick={onOpen}>
+          Trigger modal
+        </Button>
 
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Modal Title</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Lorem p={2} />
+              <Lorem p={7} />
             </ModalBody>
-
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button variant="ghost">Secondary Action</Button>
+              <Button onClick={onClose}>Close</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
