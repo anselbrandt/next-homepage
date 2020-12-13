@@ -97,9 +97,9 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
   const [lastPicked, setLastPicked] = useState<number[]>([]);
 
   const {
-    isOpen: isFilterOpen,
-    onOpen: onFilterOpen,
-    onClose: onFilterClose,
+    isOpen: isPickerOpen,
+    onOpen: onPickerOpen,
+    onClose: onPickerClose,
   } = useDisclosure();
 
   const handleUpdatePrice = (value: number) => {
@@ -236,7 +236,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
         defaultColor={defaultColor}
         bins={bins}
         range={range}
-        handleOpen={onFilterOpen}
+        handleOpen={onPickerOpen}
       />
       {modalInfo && (
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -308,7 +308,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
           </ModalContent>
         </Modal>
       )}
-      <Modal isOpen={isFilterOpen} onClose={onFilterClose} isCentered>
+      <Modal isOpen={isPickerOpen} onClose={onPickerClose} isCentered>
         <ModalContent>
           <ModalHeader>
             <Box textAlign="center">Assessment Value</Box>
@@ -337,7 +337,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
             </Flex>
           </ModalBody>
           <ModalFooter>
-            {/* <Button colorScheme={defaultColor} mr={3} onClick={onFilterClose}>
+            {/* <Button colorScheme={defaultColor} mr={3} onClick={onPickerClose}>
               Close
             </Button> */}
           </ModalFooter>
