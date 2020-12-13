@@ -13,6 +13,7 @@ interface HistogramPickerProps {
   fillColor: string;
   initialValue: number;
   handleUpdatePrice: (...args: any) => any;
+  handleUpdateTarget: (...args: any) => any;
 }
 
 export const HistogramPicker: React.FC<HistogramPickerProps> = ({
@@ -27,6 +28,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
   fillColor,
   initialValue,
   handleUpdatePrice,
+  handleUpdateTarget,
 }) => {
   const pointer = useRef<number[] | null>(null);
   const position = useRef<number[] | null>(null);
@@ -198,9 +200,15 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
                 .attr("x2", x)
                 .attr("y2", height);
               isSet.current = true;
+              handleUpdateTarget(
+                +(xScale.invert(position.current[0]) / 1000).toFixed(0) * 1000
+              );
             }
             if (position.current && !isSet.current) {
               isSet.current = true;
+              handleUpdateTarget(
+                +(xScale.invert(position.current[0]) / 1000).toFixed(0) * 1000
+              );
             }
             if (!pointers(event)[0]) {
               svg.selectAll(".line").attr("stroke", strokeColor);

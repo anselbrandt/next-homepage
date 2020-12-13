@@ -75,6 +75,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
   const fillColor = { light: colors.gray[200], dark: colors.gray[700] };
 
   const [price, setPrice] = useState<number>(320000);
+  const [target, setTarget] = useState<number>(320000);
   // const { width, height } = useGetViewport();
   const [width, height] = [600, 400];
   const svgRef = useRef();
@@ -104,6 +105,9 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
 
   const handleUpdatePrice = (value: number) => {
     setPrice(value);
+  };
+  const handleUpdateTarget = (value: number) => {
+    setTarget(value);
   };
 
   const [viewState, setViewState] = useState<ViewState>(initialViewState);
@@ -161,7 +165,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
 
   // const target = price ? price : initialValue;
   const range: [number, number, number] = [0.05, 0.15, 0.3];
-  const { bins } = useGetBins({ target: price, range: range });
+  const { bins } = useGetBins({ target: target, range: range });
 
   const layers = [
     new MVTLayer({
@@ -332,6 +336,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
                   fillColor={fillColor[colorMode]}
                   initialValue={initialValue}
                   handleUpdatePrice={handleUpdatePrice}
+                  handleUpdateTarget={handleUpdateTarget}
                 />
               </Box>
             </Flex>
