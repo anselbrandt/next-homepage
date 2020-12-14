@@ -334,7 +334,7 @@ const Map: React.FC<MapProps> = ({ defaultColor }) => {
                   muteColor={muteColor[colorMode]}
                   strokeColor={strokeColor[colorMode]}
                   fillColor={fillColor[colorMode]}
-                  initialValue={initialValue}
+                  initialValue={target ? target : initialValue}
                   handleUpdatePrice={handleUpdatePrice}
                   handleUpdateTarget={handleUpdateTarget}
                 />

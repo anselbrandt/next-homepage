@@ -162,10 +162,10 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           const type = event.type;
 
           if (["mouseenter"].includes(type)) {
-            // svg.selectAll(".line").attr("stroke", muteColor);
+            svg.selectAll(".line").attr("stroke", muteColor);
           }
           if (["touchstart", "mousedown"].includes(type)) {
-            // svg.selectAll(".line").attr("stroke", muteColor);
+            svg.selectAll(".line").attr("stroke", muteColor);
           }
           if (["touchmove", "mousemove"].includes(type)) {
             const [x, y] = pointers(event)[0];
