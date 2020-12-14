@@ -31,6 +31,7 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
   handleUpdateTarget,
 }) => {
   const pointer = useRef<number[] | null>(null);
+  const touch = useRef<number[] | null>(null);
   const position = useRef<number[] | null>(null);
   const isSet = useRef<boolean>(false);
   const [update, setUpdate] = useState(false);
@@ -160,12 +161,16 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
             event.preventDefault();
           }
           const type = event.type;
+          console.log(type);
+          console.log(pointers(event));
 
           if (["mouseenter"].includes(type)) {
             svg.selectAll(".line").attr("stroke", muteColor);
           }
           if (["touchstart", "mousedown"].includes(type)) {
             svg.selectAll(".line").attr("stroke", muteColor);
+            const [x, y] = pointers(event)[0];
+            touch.current = [x, y];
           }
           if (["touchmove", "mousemove"].includes(type)) {
             const [x, y] = pointers(event)[0];
@@ -192,6 +197,17 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
           }
           if (["touchend", "click", "mouseup"].includes(type)) {
             cursor.attr("display", null).attr("stroke", highlightColor);
+            if (!position.current && touch.current) {
+              const [x] = touch.current;
+              cursor
+                .attr("x1", x)
+                .attr("y1", 0)
+                .attr("x2", x)
+                .attr("y2", height);
+              handleUpdatePrice(+(xScale.invert(x) / 1000).toFixed(0) * 1000);
+              handleUpdateTarget(+(xScale.invert(x) / 1000).toFixed(0) * 1000);
+              isSet.current = true;
+            }
             if (position.current && isSet.current) {
               const [x] = pointer.current!;
               cursor
