@@ -157,7 +157,7 @@ const main = async () => {
   apolloServer.installSubscriptionHandlers(httpServer);
 
   httpServer.listen(PORT, () => {
-    console.log(`server started on ${CLIENT_ORIGIN}`);
+    console.log(`server started on http://localhost:${PORT}`);
   });
 };
 
