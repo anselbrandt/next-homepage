@@ -48,8 +48,8 @@ const Test: React.FC<TestProps> = ({ defaultColor }) => {
   ];
 
   const initialViewState = {
-    longitude: -73.65,
-    latitude: 45.555,
+    longitude: -73.61,
+    latitude: 45.52,
     zoom: 10,
     pitch: 0,
     bearing: 0,
