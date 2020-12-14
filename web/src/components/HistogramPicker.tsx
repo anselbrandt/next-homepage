@@ -161,8 +161,6 @@ export const HistogramPicker: React.FC<HistogramPickerProps> = ({
             event.preventDefault();
           }
           const type = event.type;
-          console.log(type);
-          console.log(pointers(event));
 
           if (["mouseenter"].includes(type)) {
             svg.selectAll(".line").attr("stroke", muteColor);
