@@ -9,7 +9,6 @@ import {
   REDIS_URL,
   DATABASE_URL,
   PORT,
-  CLIENT_ORIGIN,
   GOOGLEKEY,
 } from "./constants";
 import path from "path";
