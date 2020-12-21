@@ -11,11 +11,13 @@ import {
   DrawerFooter,
   useDisclosure,
   Flex,
+  IconButton,
 } from "@chakra-ui/core";
 import LogoutButton from "./LogoutButton";
 import NextLink from "next/link";
 import { useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 interface MenuDrawerProps {
   defaultColor: string;
@@ -30,9 +32,17 @@ const MenuDrawer: React.FC<MenuDrawerProps> = ({ defaultColor, children }) => {
   const btnRef = React.useRef(null);
   return (
     <>
-      <Button ref={btnRef} colorScheme={defaultColor} onClick={onOpen}>
+      <IconButton
+        ref={btnRef}
+        colorScheme={defaultColor}
+        variant="ghost"
+        size="lg"
+        aria-label="Menu"
+        icon={<HamburgerIcon w={8} h={8} />}
+        onClick={onOpen}
+      >
         Menu
-      </Button>
+      </IconButton>
       <Drawer
         isOpen={isOpen}
         placement="right"
@@ -41,7 +51,7 @@ const MenuDrawer: React.FC<MenuDrawerProps> = ({ defaultColor, children }) => {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
+          <DrawerCloseButton size="lg" />
           <DrawerHeader>
             {data?.me ? (
               <Flex alignItems="center">

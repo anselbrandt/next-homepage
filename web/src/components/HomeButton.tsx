@@ -11,7 +11,7 @@ export const HomeButton: React.FC<HomeButtonProps> = ({ defaultColor }) => {
     <Box>
       <NextLink href="/" passHref>
         <Button as="a" variant="outline" colorScheme={defaultColor}>
-          <Heading size="xl">ab</Heading>
+          <Heading>ab</Heading>
         </Button>
       </NextLink>
     </Box>
