@@ -1,3 +1,9 @@
+## Code for my personal website:
+
+### [anselbrandt.com](https://anselbrandt.com)
+
+### [github.com/anselbrandt/next-homepage](https://github.com/anselbrandt/next-homepage)
+
 # Next.js with Express GraphQL server, in Typescript
 
 This [Next.js](https://nextjs.org/) app uses the [chakra-ui](https://next.chakra-ui.com/) component library and [Apollo Client](https://www.apollographql.com/docs/react/) on the frontend, and [Express](https://expressjs.com/) with [Apollo Server](https://www.apollographql.com/docs/apollo-server/) on the backend.
