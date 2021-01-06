@@ -1,3 +1,9 @@
+## Code for my personal website:
+
+### [anselbrandt.com](https://anselbrandt.com)
+
+### [github.com/anselbrandt/next-homepage](https://github.com/anselbrandt/next-homepage)
+
 # Next.js with Express GraphQL server, in Typescript
 
 This [Next.js](https://nextjs.org/) app uses the [chakra-ui](https://next.chakra-ui.com/) component library and [Apollo Client](https://www.apollographql.com/docs/react/) on the frontend, and [Express](https://expressjs.com/) with [Apollo Server](https://www.apollographql.com/docs/apollo-server/) on the backend.
@@ -28,11 +34,13 @@ Enter the following `Environment Variables` before hitting the final `Deploy` bu
 
 (substituting `app_name` for your actual app name)
 
-| NAME                  | VALUE                                    |
-| --------------------- | ---------------------------------------- |
-| NEXT_PUBLIC_HTTP      | `https://app_name.herokuapp.com/graphql` |
-| NEXT_PUBLIC_WEBSOCKET | `wss://app_name.herokuapp.com/graphql`   |
-| NEXT_PUBLIC_API_URL   | `https://app_name.herokuapp.com`         |
+```
+NEXT_PUBLIC_HTTP=https://app_name.herokuapp.com/graphql
+
+NEXT_PUBLIC_WEBSOCKET=wss://app_name.herokuapp.com/graphql
+
+NEXT_PUBLIC_API_URL=https://app_name.herokuapp.com
+```
 
 ## How to use
 
