@@ -23,6 +23,6 @@ export const pages = [
   { path: "/images", title: "Reddit Gallery" },
   { path: "/map", title: "Montreal Real Estate" },
   { path: "/dashboard", title: "IoT Dashboard" },
-  { path: "https://tailwind-shades.netlify.app/", title: "Colors" },
+  { path: "/colors", title: "Colors" },
   { path: "/about", title: "About" },
 ];
