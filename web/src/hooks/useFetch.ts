@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { API_URL } from "../../constants";
 
-const useFetch = () => {
+const useFetch = (url: string) => {
   const [data, setData] = useState<undefined | string>();
   const [error, setError] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(url);
         const text = await response.text();
         setData(text);
       } catch (err) {
@@ -16,7 +15,7 @@ const useFetch = () => {
     };
     fetchData();
   }, []);
-  return { data, error };
+  return [data, error];
 };
 
 export default useFetch;

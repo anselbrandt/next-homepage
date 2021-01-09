@@ -23,6 +23,7 @@ export const pages = [
   { path: "/images", title: "Reddit Gallery" },
   { path: "/map", title: "Montreal Real Estate" },
   { path: "/dashboard", title: "IoT Dashboard" },
+  { path: "/wemo", title: "Wemo App" },
   { path: "/colors", title: "Colors" },
   { path: "/about", title: "About" },
 ];
